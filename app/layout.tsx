@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
 import type React from 'react'
 import { Lalezar } from 'next/font/google'
@@ -20,7 +21,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={LalezarFont.className}>{children}</body>
+			<body className={LalezarFont.className}>
+				{children}
+				<Analytics />
+			</body>
 		</html>
 	)
 }
