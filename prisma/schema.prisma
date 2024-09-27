@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Festival {
+  id            Int        @id @default(autoincrement())
+  name          String
+  country       String
+  prefecture    String
+  city_town     String
+  representative String?
+  overview      String?
+  history       String?
+  locations     Location[]  // 1対多のリレーション
+  news          News[]      // 1対多のリレーション
+  images        Image[]     // 1対多のリレーション
+}
+
+model Location {
+  id           Int        @id @default(autoincrement())
+  festival_id  Int
+  type         String     // 主要場所, ゴミ箱, 駐車場など
+  coordinates  String     // 緯度・経度を "lat,lng" 形式で保存
+  start_datetime DateTime? // 主要場所の場合の開始日時
+  end_datetime   DateTime? // 主要場所の場合の終了日時
+  is_shared    Boolean    // ゴミ箱・駐車場の場合、共有フラグ
+  festival     Festival   @relation(fields: [festival_id], references: [id])
+}
+
+model News {
+  id           Int        @id @default(autoincrement())
+  festival_id  Int
+  importance   String     // 重要度
+  posted_date  DateTime   // 投稿日付
+  title        String
+  content      String
+  festival     Festival   @relation(fields: [festival_id], references: [id])
+}
+
+model Image {
+  id           Int        @id @default(autoincrement())
+  festival_id  Int
+  image_url    String     // 画像のURL
+  description  String?    // 画像の説明（任意）
+  uploaded_date DateTime  // アップロード日
+  festival     Festival   @relation(fields: [festival_id], references: [id])
+}
