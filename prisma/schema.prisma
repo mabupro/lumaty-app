@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -23,6 +20,8 @@ model Festival {
   representative String?
   overview      String?
   history       String?
+  start_date    DateTime?  // イベント開始日
+  end_date      DateTime?  // イベント終了日
   locations     Location[]  // 1対多のリレーション
   news          News[]      // 1対多のリレーション
   images        Image[]     // 1対多のリレーション
@@ -32,7 +31,8 @@ model Location {
   id           Int        @id @default(autoincrement())
   festival_id  Int
   type         String     // 主要場所, ゴミ箱, 駐車場など
-  coordinates  String     // 緯度・経度を "lat,lng" 形式で保存
+  latitude     Float      // 緯度
+  longitude    Float      // 経度
   start_datetime DateTime? // 主要場所の場合の開始日時
   end_datetime   DateTime? // 主要場所の場合の終了日時
   is_shared    Boolean    // ゴミ箱・駐車場の場合、共有フラグ
