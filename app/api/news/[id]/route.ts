@@ -8,9 +8,9 @@ export const GET = async (req: Request, res: NextResponse) => {
 	try {
 		const url = new URL(req.url)
 		const festival_id = Number(url.pathname.split('/news/')[1])
-		
+
 		const news = await prisma.news.findMany({ where: { festival_id } })
-		if (!news) {
+		if (news.length === 0) {
 			return NextResponse.json({ message: 'News not found' }, { status: 404 })
 		}
 		return NextResponse.json({ message: 'Success', news }, { status: 200 })
@@ -25,7 +25,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
 	try {
 		const url = new URL(req.url)
 		const id = Number(url.pathname.split('/news/')[1])
-		
+
 		const { importance, posted_date, title, content } = await req.json()
 
 		// news データを作成する
