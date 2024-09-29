@@ -1,0 +1,71 @@
+{
+    "name": "日本の桜祭り",
+    "country": "日本",
+    "prefecture": "東京都",
+    "city_town": "渋谷区",
+    "representative": "桜祭り実行委員会",
+    "overview": "日本の春を代表する桜祭り。毎年多くの観光客が訪れます。",
+    "history": "桜祭りは50年以上の歴史があります。",
+    "start_date": "2024-04-01T09:00:00Z",
+    "end_date": "2024-04-07T18:00:00Z",
+    "locations": [
+        {
+            "type": "主要場所",
+            "latitude": 35.658034,
+            "longitude": 139.701636,
+            "start_datetime": "2024-04-01T09:00:00Z",
+            "end_datetime": "2024-04-07T18:00:00Z",
+            "is_shared": false
+        },
+        {
+            "type": "ゴミ箱",
+            "latitude": 35.657314,
+            "longitude": 139.702636,
+            "is_shared": true
+        },
+        {
+            "type": "ゴミ箱",
+            "latitude": 35.658514,
+            "longitude": 139.703236,
+            "is_shared": true
+        },
+        {
+            "type": "駐車場",
+            "latitude": 35.659034,
+            "longitude": 139.703636,
+            "is_shared": true
+        },
+        {
+            "type": "駐車場",
+            "latitude": 35.660034,
+            "longitude": 139.704636,
+            "is_shared": true
+        }
+    ],
+    "news": [
+        {
+            "importance": "高",
+            "posted_date": "2024-03-15T12:00:00Z",
+            "title": "桜祭り準備進行中",
+            "content": "桜祭りの準備が順調に進んでいます。今年も多くの催し物が予定されています。"
+        },
+        {
+            "importance": "中",
+            "posted_date": "2024-03-20T12:00:00Z",
+            "title": "交通情報",
+            "content": "祭り期間中は交通規制が行われます。事前に確認してください。"
+        }
+    ],
+    "images": [
+        {
+            "image_url": "https://example.com/sakura1.jpg",
+            "description": "桜満開の写真",
+            "uploaded_date": "2024-03-10T09:00:00Z"
+        },
+        {
+            "image_url": "https://example.com/sakura2.jpg",
+            "description": "夜桜の写真",
+            "uploaded_date": "2024-03-11T09:00:00Z"
+        }
+    ]
+}
