@@ -25,6 +25,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
 	try {
 		const url = new URL(req.url)
 		const id = Number(url.pathname.split('/news/')[1])
+		
 		const { importance, posted_date, title, content } = await req.json()
 
 		// news データを作成する
