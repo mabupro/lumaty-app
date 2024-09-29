@@ -12,31 +12,31 @@ datasource db {
 }
 
 model Festival {
-  id            Int        @id @default(autoincrement())
-  name          String
-  country       String
-  prefecture    String
-  city_town     String
-  representative String?
-  overview      String?
-  history       String?
-  start_date    DateTime?  // イベント開始日
-  end_date      DateTime?  // イベント終了日
-  locations     Location[]  // 1対多のリレーション
-  news          News[]      // 1対多のリレーション
-  images        Image[]     // 1対多のリレーション
+  id             Int        @id @default(autoincrement())
+  name           String     // フェスティバル名
+  country        String     // 国名
+  prefecture     String     // 都道府県
+  city_town      String     // 市町村
+  representative String?    // 代表者
+  overview       String?    // 概要
+  history        String?    // 歴史
+  start_date     DateTime?  // イベント開始日
+  end_date       DateTime?  // イベント終了日
+  locations      Location[] // 1対多リレーション: 位置データ
+  news           News[]     // 1対多リレーション: ニュース
+  images         Image[]    // 1対多リレーション: イメージ
 }
 
 model Location {
-  id           Int        @id @default(autoincrement())
-  festival_id  Int
-  type         String     // 主要場所, ゴミ箱, 駐車場など
-  latitude     Float      // 緯度
-  longitude    Float      // 経度
-  start_datetime DateTime? // 主要場所の場合の開始日時
-  end_datetime   DateTime? // 主要場所の場合の終了日時
-  is_shared    Boolean    // ゴミ箱・駐車場の場合、共有フラグ
-  festival     Festival   @relation(fields: [festival_id], references: [id])
+  id            Int        @id @default(autoincrement())
+  festival_id   Int
+  type          String     // 主要場所, ゴミ箱, 駐車場など
+  latitude      Float      // 緯度
+  longitude     Float      // 経度
+  start_datetime DateTime? // 主要場所の開始日時
+  end_datetime   DateTime? // 主要場所の終了日時
+  is_shared     Boolean    // ゴミ箱・駐車場の共有フラグ
+  festival      Festival   @relation(fields: [festival_id], references: [id])
 }
 
 model News {
@@ -44,16 +44,16 @@ model News {
   festival_id  Int
   importance   String     // 重要度
   posted_date  DateTime   // 投稿日付
-  title        String
-  content      String
+  title        String     // ニュースタイトル
+  content      String     // ニュース内容
   festival     Festival   @relation(fields: [festival_id], references: [id])
 }
 
 model Image {
-  id           Int        @id @default(autoincrement())
-  festival_id  Int
-  image_url    String     // 画像のURL
-  description  String?    // 画像の説明（任意）
-  uploaded_date DateTime  // アップロード日
-  festival     Festival   @relation(fields: [festival_id], references: [id])
+  id            Int        @id @default(autoincrement())
+  festival_id   Int
+  image_url     String     // 画像のURL
+  description   String?    // 画像の説明（任意）
+  uploaded_date DateTime   // アップロード日
+  festival      Festival   @relation(fields: [festival_id], references: [id])
 }
