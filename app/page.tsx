@@ -9,7 +9,7 @@ export default function Home() {
 				</div>
 				<div className="grid px-20 pt-24 gap-5">
 					{/* 十万石祭りリンク */}
-					<Link href="/Suito" className="btn-border">
+					<Link href="/" className="btn-border">
 						<span>十万石祭り</span>
 					</Link>
 					{/* 準備中ボタン */}
