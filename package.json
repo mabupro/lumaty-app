@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "biome lint ./app",
     "format": "biome format --write ./app",
-    "check": "biome check ./app"
+    "check": "biome check ./app",
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",

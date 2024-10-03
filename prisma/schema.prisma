@@ -25,18 +25,29 @@ model Festival {
   locations      Location[] // 1対多リレーション: 位置データ
   news           News[]     // 1対多リレーション: ニュース
   images         Image[]    // 1対多リレーション: イメージ
+  programs       Program[]  // 新たに追加されるプログラムとの1対多リレーション
+}
+
+model Program {
+  id             Int        @id @default(autoincrement())
+  festival_id    Int        // どの祭りに属するか
+  festival       Festival   @relation(fields: [festival_id], references: [id]) // リレーション
+  name           String     // プログラム名
+  location_id    Int?       // 場所が決まっている場合に対応
+  location       Location?  @relation(fields: [location_id], references: [id])
+  start_time     DateTime   // プログラム開始時刻
+  end_time       DateTime?  // プログラム終了時刻 (nullableにする)
+  description    String?    // プログラムの詳細説明
 }
 
 model Location {
   id            Int        @id @default(autoincrement())
   festival_id   Int
+  festival      Festival   @relation(fields: [festival_id], references: [id]) // リレーション
   type          String     // 主要場所, ゴミ箱, 駐車場など
   latitude      Float      // 緯度
   longitude     Float      // 経度
-  start_datetime DateTime? // 主要場所の開始日時
-  end_datetime   DateTime? // 主要場所の終了日時
-  is_shared     Boolean    // ゴミ箱・駐車場の共有フラグ
-  festival      Festival   @relation(fields: [festival_id], references: [id])
+  programs      Program[]  // 1対多リレーション: この場所で行われるプログラム
 }
 
 model News {

@@ -9,6 +9,11 @@ export const GET = async (req: Request, res: NextResponse) => {
 		const url = new URL(req.url)
 		const id = Number(url.pathname.split('/festival/')[1])
 		const festival = await prisma.festival.findFirst({ where: { id } })
+
+		if (!festival) {
+			return NextResponse.json({ message: 'festivals not found' }, { status: 404 })
+		}
+
 		return NextResponse.json({ message: 'Success', festival }, { status: 200 })
 	} catch (error) {
 		console.error('Error fetching festivals:', error)

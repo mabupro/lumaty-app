@@ -3,25 +3,30 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-// 祭りごとのニュース取得
+// 祭りごとのデータ取得
 export const GET = async (req: Request) => {
 	try {
 		const url = new URL(req.url)
-		const festival_id = Number(url.pathname.split('/news/')[1])
+		const festival_id = Number(url.pathname.split('/location/')[1])
 
+		// isNaN を Number.isNaN に置き換え
 		if (Number.isNaN(festival_id)) {
 			return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 })
 		}
 
-		const news = await prisma.news.findMany({
-			where: { festival_id }
+		const locations = await prisma.location.findMany({
+			where: { festival_id },
+			include: {
+				programs: true, // プログラム情報も含める
+				festival: true, // 祭り情報も含める
+			},
 		})
 
-		if (news.length === 0) {
-			return NextResponse.json({ message: 'News not found' }, { status: 404 })
+		if (locations.length === 0) {
+			return NextResponse.json({ message: 'Locations not found' }, { status: 404 })
 		}
 
-		return NextResponse.json({ message: 'Success', news }, { status: 200 })
+		return NextResponse.json({ message: 'Success', locations }, { status: 200 })
 	} catch (error) {
 		// error が Error 型かチェック
 		if (error instanceof Error) {
@@ -34,37 +39,40 @@ export const GET = async (req: Request) => {
 	}
 }
 
-// ニュース編集用
+// データ編集用
 export const PUT = async (req: Request) => {
 	try {
 		const url = new URL(req.url)
-		const id = Number(url.pathname.split('/news/')[1])
+		const id = Number(url.pathname.split('/location/')[1])
 
+		// isNaN を Number.isNaN に置き換え
 		if (Number.isNaN(id)) {
-			return NextResponse.json({ message: 'Invalid news ID' }, { status: 400 })
+			return NextResponse.json({ message: 'Invalid location ID' }, { status: 400 })
 		}
 
-		const { importance, posted_date, title, content } = await req.json()
+		const { type, latitude, longitude, start_datetime, end_datetime, is_shared } = await req.json()
 
-		// バリデーションチェック
-		if (!importance || !posted_date || !title || !content) {
+		// 必須項目のチェック
+		if (!type || !latitude || !longitude) {
 			return NextResponse.json(
 				{ message: 'Required fields are missing' },
-				{ status: 400 }
+				{ status: 400 },
 			)
 		}
 
-		const updatedNews = await prisma.news.update({
+		const updatedLocation = await prisma.location.update({
 			data: {
-				importance,
-				posted_date,
-				title,
-				content,
+				type,
+				latitude,
+				longitude,
+				start_datetime,
+				end_datetime,
+				is_shared,
 			},
 			where: { id },
 		})
 
-		return NextResponse.json({ message: 'Success', updatedNews }, { status: 200 })
+		return NextResponse.json({ message: 'Success', updatedLocation }, { status: 200 })
 	} catch (error) {
 		// error が Error 型かチェック
 		if (error instanceof Error) {

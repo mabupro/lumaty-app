@@ -3,14 +3,15 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-// 祭り、全て取得用
+// 祭り全て取得用
 export const GET = async () => {
 	try {
 		const festivals = await prisma.festival.findMany({
 			include: {
-				locations: true, // リレーションを含める
-				news: true,
-				images: true,
+				locations: true, // 位置情報も含める
+				news: true, // ニュースも含める
+				images: true, // 画像情報も含める
+				programs: true, // プログラム情報も含める
 			},
 		})
 		return NextResponse.json({ message: 'Success', festivals }, { status: 200 })
@@ -36,6 +37,7 @@ export const POST = async (req: Request) => {
 			locations,
 			news,
 			images,
+			programs, // プログラム情報を追加
 		} = await req.json()
 
 		// Festival データを作成する
@@ -50,15 +52,17 @@ export const POST = async (req: Request) => {
 				history,
 				start_date,
 				end_date,
-				// リレーションのデータはネストして作成
 				locations: {
-					create: locations, // 例: locationsが[{...}, {...}]の形式であること
+					create: locations,
 				},
 				news: {
 					create: news,
 				},
 				images: {
 					create: images,
+				},
+				programs: {
+					create: programs, // プログラム情報もネストして作成
 				},
 			},
 		})
