@@ -22,26 +22,26 @@ export const GET = async () => {
 }
 
 // 新しいプログラムを追加
-export const POST = async (req: Request) => {
-	try {
-		const { festival_id, name, location_id, start_time, end_time, description } = await req.json()
+// export const POST = async (req: Request) => {
+// 	try {
+// 		const { festival_id, name, location_id, start_time, end_time, description } = await req.json()
 
-		const newProgram = await prisma.program.create({
-			data: {
-				festival_id,
-				name,
-				location_id, // nullでもOK
-				start_time,
-				end_time,
-				description,
-			},
-		})
+// 		const newProgram = await prisma.program.create({
+// 			data: {
+// 				festival_id,
+// 				name,
+// 				location_id, // nullでもOK
+// 				start_time,
+// 				end_time,
+// 				description,
+// 			},
+// 		})
 
-		return NextResponse.json({ message: 'Success', newProgram }, { status: 201 })
-	} catch (error) {
-		console.error('Error creating program:', error)
-		return NextResponse.json({ message: 'Error', error }, { status: 500 })
-	} finally {
-		await prisma.$disconnect()
-	}
-}
+// 		return NextResponse.json({ message: 'Success', newProgram }, { status: 201 })
+// 	} catch (error) {
+// 		console.error('Error creating program:', error)
+// 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+// 	} finally {
+// 		await prisma.$disconnect()
+// 	}
+// }

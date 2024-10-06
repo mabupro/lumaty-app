@@ -30,29 +30,29 @@ export const GET = async (req: Request) => {
 }
 
 // プログラム更新
-export const PUT = async (req: Request) => {
-	try {
-		const url = new URL(req.url)
-		const id = Number(url.pathname.split('/program/')[1])
+// export const PUT = async (req: Request) => {
+// 	try {
+// 		const url = new URL(req.url)
+// 		const id = Number(url.pathname.split('/program/')[1])
 
-		const { name, location_id, start_time, end_time, description } = await req.json()
+// 		const { name, location_id, start_time, end_time, description } = await req.json()
 
-		const updatedProgram = await prisma.program.update({
-			where: { id },
-			data: {
-				name,
-				location_id, // nullでもOK
-				start_time,
-				end_time,
-				description,
-			},
-		})
+// 		const updatedProgram = await prisma.program.update({
+// 			where: { id },
+// 			data: {
+// 				name,
+// 				location_id, // nullでもOK
+// 				start_time,
+// 				end_time,
+// 				description,
+// 			},
+// 		})
 
-		return NextResponse.json({ message: 'Success', updatedProgram }, { status: 200 })
-	} catch (error) {
-		console.error('Error updating program:', error)
-		return NextResponse.json({ message: 'Error', error }, { status: 500 })
-	} finally {
-		await prisma.$disconnect()
-	}
-}
+// 		return NextResponse.json({ message: 'Success', updatedProgram }, { status: 200 })
+// 	} catch (error) {
+// 		console.error('Error updating program:', error)
+// 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+// 	} finally {
+// 		await prisma.$disconnect()
+// 	}
+// }

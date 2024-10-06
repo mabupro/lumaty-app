@@ -41,50 +41,50 @@ export const GET = async (req: Request) => {
 	}
 }
 
-// データ編集用
-export const PUT = async (req: Request) => {
-	try {
-		const url = new URL(req.url)
-		const id = Number(url.pathname.split('/location/')[1])
+// // データ編集用
+// export const PUT = async (req: Request) => {
+// 	try {
+// 		const url = new URL(req.url)
+// 		const id = Number(url.pathname.split('/location/')[1])
 
-		// isNaN を Number.isNaN に置き換え
-		if (Number.isNaN(id)) {
-			return NextResponse.json({ message: 'Invalid location ID' }, { status: 400 })
-		}
+// 		// isNaN を Number.isNaN に置き換え
+// 		if (Number.isNaN(id)) {
+// 			return NextResponse.json({ message: 'Invalid location ID' }, { status: 400 })
+// 		}
 
-		const { type, latitude, longitude, start_datetime, end_datetime, is_shared } = await req.json()
+// 		const { type, latitude, longitude, start_datetime, end_datetime, is_shared } = await req.json()
 
-		// 必須項目のチェック
-		if (!type || !latitude || !longitude) {
-			return NextResponse.json(
-				{ message: 'Required fields are missing' },
-				{ status: 400 },
-			)
-		}
+// 		// 必須項目のチェック
+// 		if (!type || !latitude || !longitude) {
+// 			return NextResponse.json(
+// 				{ message: 'Required fields are missing' },
+// 				{ status: 400 },
+// 			)
+// 		}
 
-		const updatedLocation = await prisma.location.update({
-			data: {
-				type,
-				latitude,
-				longitude,
-				start_datetime,
-				end_datetime,
-				is_shared,
-			},
-			where: { id },
-		})
+// 		const updatedLocation = await prisma.location.update({
+// 			data: {
+// 				type,
+// 				latitude,
+// 				longitude,
+// 				start_datetime,
+// 				end_datetime,
+// 				is_shared,
+// 			},
+// 			where: { id },
+// 		})
 
-		return NextResponse.json({ message: 'Success', updatedLocation }, { status: 200 })
-	} catch (error) {
-		// error が Error 型かチェック
-		if (error instanceof Error) {
-			console.error('Error fetching news:', error.message)
-			return NextResponse.json({ message: 'Error', error: error.message }, { status: 500 })
-		}
-		// unknown 型のエラーが発生した場合
-		console.error('Unknown error fetching news:', error)
-		return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 })
-	}finally {
-		await prisma.$disconnect()
-	}
-}
+// 		return NextResponse.json({ message: 'Success', updatedLocation }, { status: 200 })
+// 	} catch (error) {
+// 		// error が Error 型かチェック
+// 		if (error instanceof Error) {
+// 			console.error('Error fetching news:', error.message)
+// 			return NextResponse.json({ message: 'Error', error: error.message }, { status: 500 })
+// 		}
+// 		// unknown 型のエラーが発生した場合
+// 		console.error('Unknown error fetching news:', error)
+// 		return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 })
+// 	}finally {
+// 		await prisma.$disconnect()
+// 	}
+// }
