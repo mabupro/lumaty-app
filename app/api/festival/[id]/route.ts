@@ -9,9 +9,10 @@ export const GET = async (req: Request, res: NextResponse) => {
 		const url = new URL(req.url)
 		const id = Number(url.pathname.split('/festival/')[1])
 
-		if (Number.isNaN(id)) { // idが数値でない場合のチェック
-            return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 });
-        }
+		if (Number.isNaN(id)) {
+			// idが数値でない場合のチェック
+			return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 })
+		}
 
 		const festival = await prisma.festival.findFirst({ where: { id } })
 
@@ -23,11 +24,10 @@ export const GET = async (req: Request, res: NextResponse) => {
 	} catch (error) {
 		console.error('Error fetching festivals:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
-	}finally {
+	} finally {
 		await prisma.$disconnect()
 	}
 }
-
 
 // 祭り、編集用
 export const PUT = async (req: Request) => {
@@ -59,8 +59,8 @@ export const PUT = async (req: Request) => {
 				representative,
 				overview,
 				history,
-				start_date,
-				end_date,
+				start_date: new Date(start_date),
+				end_date: new Date(end_date),
 				// リレーションのデータはネストして作成
 				locations: {
 					create: locations, // 例: locationsが[{...}, {...}]の形式であること
@@ -78,7 +78,7 @@ export const PUT = async (req: Request) => {
 	} catch (error) {
 		console.error('Error creating festival:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
-	}finally {
+	} finally {
 		await prisma.$disconnect()
 	}
 }

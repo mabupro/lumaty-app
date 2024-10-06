@@ -84,8 +84,6 @@ export default async function Festival({ params }: { params: { id: string } }) {
 			)
 			const programDataResponse = await programResponse.json()
 
-			console.log('Program API Response:', programDataResponse); // ログで確認
-
 			if (Array.isArray(programDataResponse.programs)) {
 				programData = programDataResponse.programs
 			} else {
