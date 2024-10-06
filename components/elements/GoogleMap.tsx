@@ -15,7 +15,7 @@ interface Location {
 	name: string | null
 	latitude: number
 	longitude: number
-	programs: Program[] | null
+	programs: Program[] 
 }
 
 interface Program {
@@ -36,27 +36,25 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 
 	const generateInfoWindowContent = (location: Location) => {
 		const programsList = location.programs
-			.map(
-				(program) => `
-            <li>
-                <strong>${program.name}</strong><br />
-                開始時間: ${formatTime(program.start_time)}<br />
-            </li>
-            <br/>
-        `,
-			)
+			.map((program) => `
+				<li>
+					<strong>${program.name}</strong><br />
+					開始時間: ${program.start_time ? formatTime(program.start_time) : '未定'}<br />
+				</li>
+				<br/>
+			`)
 			.join('')
-
+	
 		return `
-            <div>
-                <h3>${location.name || ''}</h3>
-                <br/>
-                <ul>
-                    ${programsList || '<li>No Programs</li>'}
-                </ul>
-            </div>
-        `
-	}
+			<div>
+				<h3>${location.name || ''}</h3>
+				<br/>
+				<ul>
+					${programsList || '<li>No Programs</li>'}
+				</ul>
+			</div>
+		`
+	}	
 
 	const clearMarkers = () => {
 		markers.forEach((marker) => marker.setMap(null))

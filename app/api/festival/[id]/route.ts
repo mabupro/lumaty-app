@@ -3,16 +3,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-type Program = {
-	id: number
-	name: string
-	festival_id: number
-	location_id: number | null
-	start_time: Date
-	end_time: Date | null
-	description: string | null
-}
-
 // プログラム取得
 export const GET = async (req: Request) => {
 	try {
@@ -23,7 +13,7 @@ export const GET = async (req: Request) => {
 			return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 })
 		}
 
-		const programs: Program[] = await prisma.program.findMany({
+		const programs = await prisma.program.findMany({
 			// 型を明示
 			where: { festival_id: festivalId },
 			include: { location: true },

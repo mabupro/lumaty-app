@@ -8,10 +8,10 @@ export const GET = async () => {
 	try {
 		const festivals = await prisma.festival.findMany({
 			include: {
-				locations: true, 
-				news: true, 
-				images: true, 
-				// programs: true, 
+				locations: true,
+				news: true,
+				images: true,
+				programs: true,
 			},
 		})
 		return NextResponse.json({ message: 'Success', festivals }, { status: 200 })

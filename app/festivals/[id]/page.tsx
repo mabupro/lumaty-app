@@ -41,6 +41,7 @@ interface LocationData {
 	latitude: number
 	longitude: number
 	name: string | null
+	programs: ProgramData[]
 }
 
 export default async function Festival({ params }: { params: { id: string } }) {
@@ -63,6 +64,12 @@ export default async function Festival({ params }: { params: { id: string } }) {
 
 		if (response.ok) {
 			festivalData = data.festival
+
+			// festivalDataがnullでないことを確認
+			if (!festivalData) {
+				console.error('Festival data is null')
+				return <div>Error: Festival data not found</div>
+			}
 
 			// ニュース
 			const newsResponse = await fetch(
