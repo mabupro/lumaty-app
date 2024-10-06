@@ -16,7 +16,7 @@ export const GET = async (req: Request) => {
 			where: { festival_id },
 			include: {
 				programs: true, // プログラム情報も含める
-				festival: true, // 祭り情報も含める
+				// festival: true, // 祭り情報も含める
 			},
 		})
 
@@ -34,7 +34,7 @@ export const GET = async (req: Request) => {
 		// unknown 型のエラーが発生した場合
 		console.error('Unknown error fetching news:', error)
 		return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 })
-	}finally {
+	} finally {
 		await prisma.$disconnect()
 	}
 }
