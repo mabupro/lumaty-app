@@ -6,7 +6,7 @@ export const GET = async () => {
 	try {
 		const locations = await prisma.location.findMany({
 			include: {
-				// programs: true, // 各ロケーションに関連するプログラムも取得
+				programs: true, // 各ロケーションに関連するプログラムも取得
 				festival: true, // 祭り情報も取得
 			},
 		})

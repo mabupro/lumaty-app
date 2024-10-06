@@ -14,8 +14,24 @@ export const GET = async (req: Request) => {
 
 		// プログラムを開始時間順に取得
 		const programs = await prisma.program.findMany({
-			where: { festival_id: festivalId },
-			include: { location: true },
+			select: {
+				id: true,
+				name: true,
+				start_time: true,
+				end_time: true,
+				description: true,
+				location: {
+					select: {
+						id: true,
+						name: true,
+						latitude: true,
+						longitude: true,
+					},
+				},
+			},
+			where: {
+				festival_id: festivalId,
+			},
 		})
 
 		return NextResponse.json({ message: 'Success', programs }, { status: 200 })
