@@ -36,6 +36,8 @@ export const GET = async (req: Request) => {
 		// unknown 型のエラーが発生した場合
 		console.error('Unknown error fetching news:', error)
 		return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 })
+	}finally {
+		await prisma.$disconnect()
 	}
 }
 
@@ -82,5 +84,7 @@ export const PUT = async (req: Request) => {
 		// unknown 型のエラーが発生した場合
 		console.error('Unknown error fetching news:', error)
 		return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 })
+	}finally {
+		await prisma.$disconnect()
 	}
 }

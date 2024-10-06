@@ -1,13 +1,10 @@
 import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
 import type React from 'react'
-import { Lalezar } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import './globals.css'
 
-const LalezarFont = Lalezar({
-	weight: '400',
-	subsets: ['latin'],
-})
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
 	title: 'Lumaty-App',
@@ -19,9 +16,18 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode
 }>) {
+	const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
 	return (
 		<html lang="ja">
-			<body className={LalezarFont.className}>
+			<head>
+				{googleMapsApiKey && (
+					<script
+						async
+						src={`https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places`}
+					/>
+				)}
+			</head>
+			<body className={inter.className}>
 				{children}
 				<Analytics />
 			</body>

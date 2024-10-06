@@ -27,10 +27,7 @@ export const POST = async (req: Request) => {
 
 		// バリデーションチェック
 		if (!festival_id || !importance || !posted_date || !title || !content) {
-			return NextResponse.json(
-				{ message: 'Required fields are missing' },
-				{ status: 400 }
-			)
+			return NextResponse.json({ message: 'Required fields are missing' }, { status: 400 })
 		}
 
 		const newNews = await prisma.news.create({

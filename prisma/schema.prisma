@@ -45,6 +45,7 @@ model Location {
   festival_id   Int
   festival      Festival   @relation(fields: [festival_id], references: [id]) // リレーション
   type          String     // 主要場所, ゴミ箱, 駐車場など
+  name          String?    // 場所の名前がある時
   latitude      Float      // 緯度
   longitude     Float      // 経度
   programs      Program[]  // 1対多リレーション: この場所で行われるプログラム

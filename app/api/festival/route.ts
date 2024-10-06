@@ -8,16 +8,18 @@ export const GET = async () => {
 	try {
 		const festivals = await prisma.festival.findMany({
 			include: {
-				locations: true, // 位置情報も含める
-				news: true, // ニュースも含める
-				images: true, // 画像情報も含める
-				programs: true, // プログラム情報も含める
+				locations: true, 
+				news: true, 
+				images: true, 
+				programs: true, 
 			},
 		})
 		return NextResponse.json({ message: 'Success', festivals }, { status: 200 })
 	} catch (error) {
 		console.error('Error fetching festivals:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	} finally {
+		await prisma.$disconnect()
 	}
 }
 
@@ -37,7 +39,7 @@ export const POST = async (req: Request) => {
 			locations,
 			news,
 			images,
-			programs, // プログラム情報を追加
+			programs,
 		} = await req.json()
 
 		// Festival データを作成する
@@ -62,7 +64,7 @@ export const POST = async (req: Request) => {
 					create: images,
 				},
 				programs: {
-					create: programs, // プログラム情報もネストして作成
+					create: programs,
 				},
 			},
 		})
@@ -70,5 +72,7 @@ export const POST = async (req: Request) => {
 	} catch (error) {
 		console.error('Error creating festival:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	}finally {
+		await prisma.$disconnect()
 	}
 }

@@ -3,11 +3,16 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-// 祭り、1件ずつ取得用
+// 祭りごとに取得用
 export const GET = async (req: Request, res: NextResponse) => {
 	try {
 		const url = new URL(req.url)
 		const id = Number(url.pathname.split('/festival/')[1])
+
+		if (Number.isNaN(id)) { // idが数値でない場合のチェック
+            return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 });
+        }
+
 		const festival = await prisma.festival.findFirst({ where: { id } })
 
 		if (!festival) {
@@ -18,8 +23,11 @@ export const GET = async (req: Request, res: NextResponse) => {
 	} catch (error) {
 		console.error('Error fetching festivals:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	}finally {
+		await prisma.$disconnect()
 	}
 }
+
 
 // 祭り、編集用
 export const PUT = async (req: Request) => {
@@ -70,5 +78,7 @@ export const PUT = async (req: Request) => {
 	} catch (error) {
 		console.error('Error creating festival:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	}finally {
+		await prisma.$disconnect()
 	}
 }

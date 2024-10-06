@@ -16,6 +16,8 @@ export const GET = async () => {
 	} catch (error) {
 		console.error('Error fetching programs:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	} finally {
+		await prisma.$disconnect()
 	}
 }
 
@@ -39,5 +41,7 @@ export const POST = async (req: Request) => {
 	} catch (error) {
 		console.error('Error creating program:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	} finally {
+		await prisma.$disconnect()
 	}
 }

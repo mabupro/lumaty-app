@@ -7,24 +7,25 @@ const prisma = new PrismaClient()
 export const GET = async (req: Request) => {
 	try {
 		const url = new URL(req.url)
-		const id = Number(url.pathname.split('/program/')[1])
+		// URLパスからfestivalIdを取得
+		const festivalId = Number(url.pathname.split('/api/program/')[1])
 
-		const program = await prisma.program.findUnique({
-			where: { id },
-			include: {
-				location: true, // 関連する場所を含む
-				festival: true, // 関連する祭りを含む
-			},
-		})
-
-		if (!program) {
-			return NextResponse.json({ message: 'Program not found' }, { status: 404 })
+		if (Number.isNaN(festivalId)) {
+			return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 })
 		}
 
-		return NextResponse.json({ message: 'Success', program }, { status: 200 })
+		// プログラムを開始時間順に取得
+		const programs = await prisma.program.findMany({
+			where: { festival_id: festivalId },
+			include: { location: true },
+		})
+
+		return NextResponse.json({ message: 'Success', programs }, { status: 200 })
 	} catch (error) {
-		console.error('Error fetching program:', error)
+		console.error('Error fetching programs:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	} finally {
+		await prisma.$disconnect()
 	}
 }
 
@@ -51,5 +52,7 @@ export const PUT = async (req: Request) => {
 	} catch (error) {
 		console.error('Error updating program:', error)
 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	} finally {
+		await prisma.$disconnect()
 	}
 }
