@@ -24,55 +24,55 @@ export const GET = async () => {
 }
 
 // 祭り投稿用
-export const POST = async (req: Request) => {
-	try {
-		const {
-			name,
-			country,
-			prefecture,
-			city_town,
-			representative,
-			overview,
-			history,
-			start_date,
-			end_date,
-			locations,
-			news,
-			images,
-			programs,
-		} = await req.json()
+// export const POST = async (req: Request) => {
+// 	try {
+// 		const {
+// 			name,
+// 			country,
+// 			prefecture,
+// 			city_town,
+// 			representative,
+// 			overview,
+// 			history,
+// 			start_date,
+// 			end_date,
+// 			locations,
+// 			news,
+// 			images,
+// 			programs,
+// 		} = await req.json()
 
-		// Festival データを作成する
-		const festival = await prisma.festival.create({
-			data: {
-				name,
-				country,
-				prefecture,
-				city_town,
-				representative,
-				overview,
-				history,
-				start_date,
-				end_date,
-				locations: {
-					create: locations,
-				},
-				news: {
-					create: news,
-				},
-				images: {
-					create: images,
-				},
-				programs: {
-					create: programs,
-				},
-			},
-		})
-		return NextResponse.json({ message: 'Success', festival }, { status: 201 })
-	} catch (error) {
-		console.error('Error creating festival:', error)
-		return NextResponse.json({ message: 'Error', error }, { status: 500 })
-	}finally {
-		await prisma.$disconnect()
-	}
-}
+// 		// Festival データを作成する
+// 		const festival = await prisma.festival.create({
+// 			data: {
+// 				name,
+// 				country,
+// 				prefecture,
+// 				city_town,
+// 				representative,
+// 				overview,
+// 				history,
+// 				start_date,
+// 				end_date,
+// 				locations: {
+// 					create: locations,
+// 				},
+// 				news: {
+// 					create: news,
+// 				},
+// 				images: {
+// 					create: images,
+// 				},
+// 				programs: {
+// 					create: programs,
+// 				},
+// 			},
+// 		})
+// 		return NextResponse.json({ message: 'Success', festival }, { status: 201 })
+// 	} catch (error) {
+// 		console.error('Error creating festival:', error)
+// 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+// 	}finally {
+// 		await prisma.$disconnect()
+// 	}
+// }
