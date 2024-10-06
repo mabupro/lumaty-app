@@ -9,7 +9,7 @@ export const GET = async () => {
 				locations: true,
 				news: true,
 				images: true,
-				programs: true,
+				// programs: true,
 			},
 		})
 		return NextResponse.json({ message: 'Success', festivals }, { status: 200 })
