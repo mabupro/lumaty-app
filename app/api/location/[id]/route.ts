@@ -17,7 +17,7 @@ export const GET = async (req: Request) => {
 		const locations = await prisma.location.findMany({
 			where: { festival_id },
 			include: {
-				programs: true, // プログラム情報も含める
+				// programs: true, // プログラム情報も含める
 				festival: true, // 祭り情報も含める
 			},
 		})
