@@ -20,7 +20,7 @@ export default function NewsListPage({ params }: { params: { id: string } }) {
 	useEffect(() => {
 		const fetchNews = async () => {
 			try {
-				const response = await fetch(`http://localhost:3000/api/news?festivalId=${festivalId}`)
+				const response = await fetch(`https://lumaty-app.vercel.app/api/news?festivalId=${festivalId}`)
 				const data = await response.json()
 				if (Array.isArray(data.news)) {
 					setNewsData(data.news)

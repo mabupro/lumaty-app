@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: { id: string; festivalI
 	let newsData: NewsData | null = null
 
 	try {
-		const response = await fetch(`http://localhost:3000/api/news/${festivalId}/${newsId}`)
+		const response = await fetch(`https://lumaty-app.vercel.app/api/news/${festivalId}/${newsId}`)
 		if (response.ok) {
 			const data = await response.json()
 			newsData = data.news

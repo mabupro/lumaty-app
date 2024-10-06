@@ -58,7 +58,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 	}
 
 	try {
-		const response = await fetch(`http://localhost:3000/api/festival/${festivalId}`)
+		const response = await fetch(`https://lumaty-app.vercel.app/api/festival/${festivalId}`)
 		const data = await response.json()
 
 		if (response.ok) {
@@ -66,7 +66,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 
 			// ニュース
 			const newsResponse = await fetch(
-				`http://localhost:3000/api/news?festivalId=${festivalData.id}`,
+				`https://lumaty-app.vercel.app/api/news?festivalId=${festivalData.id}`,
 			)
 			const newsDataResponse = await newsResponse.json()
 
@@ -80,7 +80,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 
 			// プログラム
 			const programResponse = await fetch(
-				`http://localhost:3000/api/program?festivalId=${festivalData.id}`,
+				`https://lumaty-app.vercel.app/api/program?festivalId=${festivalData.id}`,
 			)
 			const programDataResponse = await programResponse.json()
 
@@ -93,7 +93,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 
 			// マップ
 			const locationResponse = await fetch(
-				`http://localhost:3000/api/location?festivalId=${festivalData.id}`,
+				`https://lumaty-app.vercel.app/api/location?festivalId=${festivalData.id}`,
 			)
 			const locationDataResponse = await locationResponse.json()
 
