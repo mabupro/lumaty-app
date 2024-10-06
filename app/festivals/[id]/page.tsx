@@ -59,8 +59,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 	}
 
 	try {
-		// 本番環境用のURLを環境変数から取得
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/festival/${festivalId}`)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/festival/${festivalId}`)
 
 		const data = await response.json()
 
@@ -75,21 +74,43 @@ export default async function Festival({ params }: { params: { id: string } }) {
 
 			// ニュース
 			const newsResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/news?festivalId=${festivalData.id}`,
+				`${process.env.NEXT_PUBLIC_API_URL}/api/news?festivalId=${festivalData.id}`,
 			)
 			const newsDataResponse = await newsResponse.json()
 
+			// newsDataResponse.newsが配列かどうか確認
+			if (Array.isArray(newsDataResponse.news)) {
+				newsData = newsDataResponse.news
+			} else {
+				console.error('News data is not an array:', newsDataResponse.news)
+				newsData = [] // 配列でない場合は空の配列にする
+			}
+
 			// プログラム
 			const programResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/program?festivalId=${festivalData.id}`,
+				`${process.env.NEXT_PUBLIC_API_URL}/api/program?festivalId=${festivalData.id}`,
 			)
 			const programDataResponse = await programResponse.json()
 
+			if (Array.isArray(programDataResponse.programs)) {
+				programData = programDataResponse.programs
+			} else {
+				console.error('Program data is not an array:', programDataResponse.programs)
+				programData = []
+			}
+
 			// マップ
 			const locationResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/location?festivalId=${festivalData.id}`,
+				`${process.env.NEXT_PUBLIC_API_URL}/api/location?festivalId=${festivalData.id}`,
 			)
 			const locationDataResponse = await locationResponse.json()
+
+			if (Array.isArray(locationDataResponse.locations)) {
+				locationData = locationDataResponse.locations
+			} else {
+				console.error('Location data is not an array:', locationDataResponse.locations)
+				locationData = []
+			}
 		} else {
 			console.error('Error fetching festival data:', data.message)
 		}
