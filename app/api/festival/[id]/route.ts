@@ -59,8 +59,8 @@ export const PUT = async (req: Request) => {
 				representative,
 				overview,
 				history,
-				start_date: new Date(start_date),
-				end_date: new Date(end_date),
+				start_date:start_date ? new Date(start_date) : null,
+				end_date: end_date ? new Date(end_date) : null,
 				// リレーションのデータはネストして作成
 				locations: {
 					create: locations, // 例: locationsが[{...}, {...}]の形式であること
