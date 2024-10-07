@@ -29,7 +29,7 @@ export default function ProgramPeriod({
 	// }
 
 	return (
-		<div className="border-2 border-gray-200 mx-auto my-6 w-5/6 rounded-lg bg-white shadow-md  cursor-pointer transition hover:opacity-80">
+		<div className="border-2 border-gray-200 mx-auto my-3 w-5/6 rounded-lg bg-white shadow-md  cursor-pointer transition hover:opacity-80">
 			<div className="px-4 py-3 bg-teal-400 rounded-t-lg">
 				<p className=" text-slate-700 font-bold">{name}</p>
 			</div>
@@ -40,7 +40,7 @@ export default function ProgramPeriod({
 				</div>
 				{locationName && <p className="mt-2 text-gray-600">場所: {locationName}</p>}
 				<Link href={`/program/${programId}`}>
-					<div className="mt-4 flex items-center justify-end">
+					<div className="flex items-center justify-end">
 						<FiChevronRight size={24} className="text-teal-500" />
 					</div>
 				</Link>

@@ -135,6 +135,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 		return (
 			<>
 				<Header />
+
 				<div className="bg-teal-500 pt-20">
 					<Image
 						className="mx-auto mt-8 w-4/5 h-72 justify-center rounded-2xl bg-white"
@@ -143,6 +144,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						width={400}
 						height={200}
 					/>
+
 					<div className="mt-8 pb-1">
 						{/* <div className="pb-8">
 							<Subtitle subtitle={`Demo: ${festivalData.name}`} color="white" />
@@ -157,7 +159,12 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							endDayOfWeek={endDayOfWeek} // 終了日の曜日
 							index={festivalData.id}
 						/>
-						<Subtitle subtitle="プログラム" color="white" />
+					</div>
+
+					<div className="pb-3">
+						<div className="mb-10">
+							<Subtitle subtitle="プログラム" color="white" />
+						</div>
 						{sortedProgramData.map((program) => (
 							<ProgramPeriod
 								key={program.id}
@@ -171,6 +178,48 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						))}
 					</div>
 				</div>
+
+				<div className="bg-white  py-12">
+					<Subtitle subtitle="アクセス" color="black" />
+					<div className="mx-auto mt-8 w-90 h-auto justify-center rounded-md bg-slate-300">
+						<GoogleMap locations={locationData} />
+					</div>
+					{/* <div className="mt-12"> */}
+						{/* TODO: urlを動的にしたい */}
+						{/* <MainButton title="アクセスの詳細はコチラ" url="Suito/access" /> */}
+					{/* </div> */}
+				</div>
+
+				<div className="bg-teal-500 py-12">
+					<Subtitle subtitle="まつりについて" color="white" />
+					{/* TODO: 必要かどうかや、名前も動的にしたい */}
+					<div className="cursor-pointer">
+						<Image
+							className="mx-auto mt-8 w-4/5 h-48 justify-center rounded-md bg-slate-300"
+							alt="祭りの歴史"
+							src="/images/640x360.png"
+							width={640}
+							height={360}
+						/>
+						<p className="text-xl font-semibold text-center pr-36 mt-3 text-white">
+							水都まつりの歴史
+						</p>
+					</div>
+					{/* TODO: 必要かどうかや、名前も動的にしたい */}
+					<div className="cursor-pointer">
+						<Image
+							className="mx-auto mt-8 w-4/5 h-48 justify-center rounded-md bg-slate-300"
+							alt="祭りの概要"
+							src="/images/640x360.png"
+							width={640}
+							height={360}
+						/>
+						<p className="text-xl font-semibold text-center pr-36 mt-3 text-white">
+							水都まつりの概要
+						</p>
+					</div>
+				</div>
+
 				<div className="bg-white py-12">
 					<Subtitle subtitle="NEWS" color="black" />
 					<div className="mt-12">
@@ -185,47 +234,8 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							/>
 						))}
 					</div>
-					<div className="mt-12">
+					<div className="my-12">
 						<MainButton title="News一覧はコチラ" url={`${params.id}/news`} />
-					</div>
-				</div>
-				<div className="bg-teal-500 py-12">
-					<Subtitle subtitle="アクセス" color="white" />
-					<div className="mx-auto mt-8 w-90 h-auto justify-center rounded-md bg-slate-300">
-						<GoogleMap locations={locationData} />
-					</div>
-					<div className="mt-12">
-						{/* TODO: urlを動的にしたい */}
-						{/* <MainButton title="アクセスの詳細はコチラ" url="Suito/access" /> */}
-					</div>
-				</div>
-				<div className="bg-white py-12">
-					<Subtitle subtitle="まつりについて" color="" />
-					{/* TODO: 必要かどうかや、名前も動的にしたい */}
-					<div className="cursor-pointer">
-						<Image
-							className="mx-auto mt-8 w-4/5 h-48 justify-center rounded-md bg-slate-300"
-							alt="祭りの歴史"
-							src="/images/640x360.png"
-							width={640}
-							height={360}
-						/>
-						<p className="text-xl font-semibold text-center pr-36 mt-3 text-gray-700">
-							水都まつりの歴史
-						</p>
-					</div>
-					{/* TODO: 必要かどうかや、名前も動的にしたい */}
-					<div className="cursor-pointer">
-						<Image
-							className="mx-auto mt-8 w-4/5 h-48 justify-center rounded-md bg-slate-300"
-							alt="祭りの概要"
-							src="/images/640x360.png"
-							width={640}
-							height={360}
-						/>
-						<p className="text-xl font-semibold text-center pr-36 mt-3 text-gray-700">
-							水都まつりの概要
-						</p>
 					</div>
 				</div>
 			</>

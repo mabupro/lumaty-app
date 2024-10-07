@@ -1,5 +1,5 @@
 import { Lalezar } from 'next/font/google'
-import HumbergerButton from '@/components/elements/HumbergerButton'
+// import HumbergerButton from '@/components/elements/HumbergerButton'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -27,9 +27,9 @@ export default function Header() {
 						</div>
 					</Link>
 				</div>
-				<div className="my-auto mx-6 pt-1">
+				{/* <div className="my-auto mx-6 pt-1">
 					<HumbergerButton />
-				</div>
+				</div> */}
 			</div>
 		</div>
 	)

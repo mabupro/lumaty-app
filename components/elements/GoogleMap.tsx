@@ -1,5 +1,4 @@
 'use client'
-import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import formatTime from '@/utils/formatTime'
 
@@ -15,7 +14,7 @@ interface Location {
 	name: string | null
 	latitude: number
 	longitude: number
-	programs: Program[] 
+	programs: Program[]
 }
 
 interface Program {
@@ -32,29 +31,34 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 	const mapRef = useRef<HTMLDivElement>(null)
 	const [map, setMap] = useState<google.maps.Map | null>(null)
 	const [markers, setMarkers] = useState<google.maps.Marker[]>([])
+	const [currentLocationMarker, setCurrentLocationMarker] = useState<google.maps.Marker | null>(
+		null,
+	)
 	const [activeButton, setActiveButton] = useState<string>('')
 
 	const generateInfoWindowContent = (location: Location) => {
 		const programsList = location.programs
-			.map((program) => `
-				<li>
-					<strong>${program.name}</strong><br />
-					開始時間: ${program.start_time ? formatTime(program.start_time) : '未定'}<br />
-				</li>
-				<br/>
-			`)
+			.map(
+				(program) => `
+			<li>
+				<strong>${program.name}</strong><br />
+				開始時間: ${program.start_time ? formatTime(program.start_time) : '未定'}<br />
+			</li>
+			<br/>
+    	`,
+			)
 			.join('')
-	
+
 		return `
-			<div>
-				<h3>${location.name || ''}</h3>
-				<br/>
-				<ul>
-					${programsList || '<li>No Programs</li>'}
-				</ul>
-			</div>
-		`
-	}	
+      	<div>
+			<h3>${location.name || ''}</h3>
+			<br/>
+			<ul>
+				${programsList || '<li>No Programs</li>'}
+			</ul>
+      </div>
+    `
+	}
 
 	const clearMarkers = () => {
 		markers.forEach((marker) => marker.setMap(null))
@@ -81,17 +85,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 					marker.addListener('click', () => {
 						infoWindow.open(map, marker)
 					})
-				} else {
-					marker.addListener('click', () => {
-						map.setCenter({ lat: location.latitude, lng: location.longitude })
-
-						window.open(
-							`https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}`,
-							'_blank',
-						)
-					})
 				}
-
 				return marker
 			})
 
@@ -105,7 +99,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 	}
 
 	useEffect(() => {
-		// Google Maps API script loading function
 		const loadGoogleMapsScript = () => {
 			const script = document.createElement('script')
 			script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}`
@@ -131,7 +124,52 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 		}
 	}, [])
 
-	// Check if locations of a specific type exist
+	// リアルタイムで現在地を表示する処理
+	useEffect(() => {
+		if (!map) return
+
+		const successCallback = (position: GeolocationPosition) => {
+			const { latitude, longitude } = position.coords
+			const userLocation = { lat: latitude, lng: longitude }
+
+			if (currentLocationMarker) {
+				currentLocationMarker.setPosition(userLocation)
+			} else {
+				const marker = new google.maps.Marker({
+					position: userLocation,
+					map,
+					title: '現在地',
+					icon: {
+						path: google.maps.SymbolPath.CIRCLE,
+						scale: 8,
+						fillColor: '#4285F4',
+						fillOpacity: 1,
+						strokeWeight: 2,
+						strokeColor: '#FFFFFF',
+					},
+				})
+				setCurrentLocationMarker(marker)
+			}
+
+			map.setCenter(userLocation)
+		}
+
+		const errorCallback = (error: GeolocationPositionError) => {
+			console.error('Error getting location:', error)
+		}
+
+		const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, {
+			enableHighAccuracy: true,
+			maximumAge: 10000,
+			timeout: 5000,
+		})
+
+		return () => {
+			navigator.geolocation.clearWatch(watchId)
+		}
+	}, [map, currentLocationMarker])
+
+	// ボタンのレンダリング
 	const hasLocationsOfType = (type: string) => locations.some((location) => location.type === type)
 
 	return (
@@ -139,7 +177,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 			<div>
 				<div ref={mapRef} style={{ width: INITIALIZE_MAP_WIDTH, height: INITIALIZE_MAP_HEIGHT }} />
 			</div>
-			<div className="flex gap-3 p-4 bg-teal-400">
+			<div className="flex gap-3 p-4 bg-slate-50">
 				{hasLocationsOfType('主要場所') && (
 					<button
 						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === '主要場所' ? 'bg-blue-500 text-white' : 'bg-slate-200'}`}

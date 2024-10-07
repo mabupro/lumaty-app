@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: { id: string; festivalI
 		<>
 			<Header />
 			<div className="pt-28 px-5">
-				<Link href={`/festivals/${festivalId}/news`} className="flex">
+				<Link href={`/festivals/${festivalId}`} className="flex">
 					<FiChevronLeft size={30} color="#666" />
 					<p className="text-lg font-semibold text-[#666]">戻る</p>
 				</Link>
