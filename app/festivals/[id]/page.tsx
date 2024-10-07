@@ -210,6 +210,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							<p className="p-2 text-lg">{festivalData.overview}</p>
 						</div>
 					</div>
+					
 					{/* TODO: 必要かどうかや、名前も動的にしたい */}
 					<div className="cursor-pointer">
 						<Image
