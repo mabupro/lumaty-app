@@ -1,6 +1,6 @@
-import Link from 'next/link'
+// import Link from 'next/link'
 import formatTime from '@/utils/formatTime'
-import { FiChevronRight } from 'react-icons/fi'
+// import { FiChevronRight } from 'react-icons/fi'
 
 type Props = {
 	programId: number
@@ -39,11 +39,11 @@ export default function ProgramPeriod({
 					<p className="text-gray-700">終了時間: {endTime ? formatTime(endTime) : '未定'}</p>
 				</div>
 				{locationName && <p className="mt-2 text-gray-600">場所: {locationName}</p>}
-				<Link href={`/program/${programId}`}>
+				{/* <Link href={`/program/${programId}`}>
 					<div className="flex items-center justify-end">
 						<FiChevronRight size={24} className="text-teal-500" />
 					</div>
-				</Link>
+				</Link> */}
 			</div>
 		</div>
 	)
