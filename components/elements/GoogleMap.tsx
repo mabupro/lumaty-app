@@ -1,4 +1,5 @@
 'use client'
+import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import formatTime from '@/utils/formatTime'
 
@@ -61,6 +62,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 	}
 
 	const clearMarkers = () => {
+		// biome-ignore lint/complexity/noForEach: <explanation>
 		markers.forEach((marker) => marker.setMap(null))
 		setMarkers([])
 	}
@@ -179,6 +181,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 			</div>
 			<div className="flex gap-3 p-4 bg-slate-50">
 				{hasLocationsOfType('主要場所') && (
+					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
 						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === '主要場所' ? 'bg-blue-500 text-white' : 'bg-slate-200'}`}
 						onClick={() => addMarkers('主要場所')}
@@ -187,6 +190,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 					</button>
 				)}
 				{hasLocationsOfType('駐車場') && (
+					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
 						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === '駐車場' ? 'bg-blue-400 text-white' : 'bg-slate-200'}`}
 						onClick={() => addMarkers('駐車場')}
@@ -195,6 +199,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 					</button>
 				)}
 				{hasLocationsOfType('トイレ') && (
+					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
 						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === 'トイレ' ? 'bg-blue-400 text-white' : 'bg-slate-200'}`}
 						onClick={() => addMarkers('トイレ')}
@@ -203,6 +208,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 					</button>
 				)}
 				{hasLocationsOfType('ゴミ箱') && (
+					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
 						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === 'ゴミ箱' ? 'bg-blue-400 text-white' : 'bg-slate-200'}`}
 						onClick={() => addMarkers('ゴミ箱')}

@@ -207,10 +207,10 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							{festivalData.name}の概要
 						</p>
 						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
-							<p className="p-2 text-lg">{festivalData.overview}</p>
+							<p className="p-2 text-md">{festivalData.overview}</p>
 						</div>
 					</div>
-					
+
 					{/* TODO: 必要かどうかや、名前も動的にしたい */}
 					<div className="cursor-pointer">
 						<Image
@@ -224,7 +224,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							{festivalData.name}の歴史
 						</p>
 						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
-							<p className="p-3 text-lg">{festivalData.history}</p>
+							<p className="p-3 text-md">{festivalData.history}</p>
 						</div>
 					</div>
 				</div>
