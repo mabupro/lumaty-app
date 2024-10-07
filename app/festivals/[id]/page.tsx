@@ -17,6 +17,8 @@ interface FestivalData {
 	start_date: string
 	end_date: string
 	imageUrl: string
+	overview: string
+	history: string
 }
 
 interface NewsData {
@@ -185,26 +187,13 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						<GoogleMap locations={locationData} />
 					</div>
 					{/* <div className="mt-12"> */}
-						{/* TODO: urlを動的にしたい */}
-						{/* <MainButton title="アクセスの詳細はコチラ" url="Suito/access" /> */}
+					{/* TODO: urlを動的にしたい */}
+					{/* <MainButton title="アクセスの詳細はコチラ" url="Suito/access" /> */}
 					{/* </div> */}
 				</div>
 
 				<div className="bg-teal-500 py-12">
 					<Subtitle subtitle="まつりについて" color="white" />
-					{/* TODO: 必要かどうかや、名前も動的にしたい */}
-					<div className="cursor-pointer">
-						<Image
-							className="mx-auto mt-8 w-4/5 h-48 justify-center rounded-md bg-slate-300"
-							alt="祭りの歴史"
-							src="/images/640x360.png"
-							width={640}
-							height={360}
-						/>
-						<p className="text-xl font-semibold text-center pr-36 mt-3 text-white">
-							水都まつりの歴史
-						</p>
-					</div>
 					{/* TODO: 必要かどうかや、名前も動的にしたい */}
 					<div className="cursor-pointer">
 						<Image
@@ -215,8 +204,27 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							height={360}
 						/>
 						<p className="text-xl font-semibold text-center pr-36 mt-3 text-white">
-							水都まつりの概要
+							{festivalData.name}の概要
 						</p>
+						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
+							<p className="p-2 text-lg">{festivalData.overview}</p>
+						</div>
+					</div>
+					{/* TODO: 必要かどうかや、名前も動的にしたい */}
+					<div className="cursor-pointer">
+						<Image
+							className="mx-auto mt-8 w-4/5 h-48 justify-center rounded-md bg-slate-300"
+							alt="祭りの歴史"
+							src="/images/640x360.png"
+							width={640}
+							height={360}
+						/>
+						<p className="text-xl font-semibold text-center pr-36 mt-3 text-white">
+							{festivalData.name}の歴史
+						</p>
+						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
+							<p className="p-3 text-lg">{festivalData.history}</p>
+						</div>
 					</div>
 				</div>
 
