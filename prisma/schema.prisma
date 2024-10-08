@@ -25,7 +25,7 @@ model Festival {
   locations      Location[] // 1対多リレーション: 位置データ
   news           News[] // 1対多リレーション: ニュース
   images         Image[] // 1対多リレーション: イメージ
-  programs       Program[]  @relation // 新たに追加されるプログラムとの1対多リレーション
+  programs       Program[] // 新たに追加されるプログラムとの1対多リレーション
 }
 
 model Program {
@@ -48,7 +48,7 @@ model Location {
   name        String? // 場所の名前がある時
   latitude    Float // 緯度
   longitude   Float // 経度
-  programs    Program[] @relation // 1対多リレーション: この場所で行われるプログラム
+  programs    Program[] // 1対多リレーション: この場所で行われるプログラム
 }
 
 model News {
