@@ -16,7 +16,6 @@ interface FestivalData {
 	name: string
 	start_date: string
 	end_date: string
-	imageUrl: string
 	overview: string
 	history: string
 }
@@ -46,6 +45,11 @@ interface LocationData {
 	programs: ProgramData[]
 }
 
+interface ImageData {
+	id: number
+	image_url: string
+}
+
 export default async function Festival({ params }: { params: { id: string } }) {
 	const festivalIdString = params.id
 	const festivalId = Number(festivalIdString)
@@ -54,6 +58,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 	let newsData: NewsData[] = []
 	let programData: ProgramData[] = []
 	let locationData: LocationData[] = []
+	let imageData: ImageData[] = []
 
 	if (Number.isNaN(festivalId)) {
 		console.error('Invalid festival ID:', festivalIdString)
@@ -113,6 +118,19 @@ export default async function Festival({ params }: { params: { id: string } }) {
 				console.error('Location data is not an array:', locationDataResponse.locations)
 				locationData = []
 			}
+
+			// 画像
+			const imageResponse = await fetch(
+				`${process.env.NEXT_PUBLIC_API_URL}/api/image/${festivalData.id}`,
+			)
+			const imageDataResponse = await imageResponse.json()
+
+			if (Array.isArray(imageDataResponse.image)) {
+				imageData = imageDataResponse.image
+			} else {
+				console.error('Image data is not an array:', imageDataResponse.image)
+				imageData = []
+			}
 		} else {
 			console.error('Error fetching festival data:', data.message)
 		}
@@ -141,7 +159,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 				<div className="bg-teal-500 pt-20">
 					<Image
 						className="mx-auto mt-8 w-4/5 h-72 justify-center rounded-2xl bg-white"
-						src={festivalData.imageUrl}
+						src={imageData.length > 0 ? imageData[0].image_url : ''}
 						alt="Festival Image"
 						width={400}
 						height={200}
