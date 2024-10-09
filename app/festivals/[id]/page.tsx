@@ -227,7 +227,6 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							{festivalData.name}の概要
 						</p>
 						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
-							<p className="p-2 text-md">{festivalData.overview}</p>
 							<ReactMarkdown remarkPlugins={[remarkGfm]}>
 								{festivalData.overview}
 								{/* <p className="p-2 text-md">{festivalData.overview}</p> */}
