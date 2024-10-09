@@ -3,8 +3,9 @@ import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import formatTime from '@/utils/formatTime'
 
-const INITIALIZE_LAT = 35.68238
-const INITIALIZE_LNG = 139.76556
+// 大垣に変更
+const INITIALIZE_LAT = 35.3671433
+const INITIALIZE_LNG = 136.6184504
 const INITIALIZE_ZOOM = 15
 const INITIALIZE_MAP_WIDTH = '100%'
 const INITIALIZE_MAP_HEIGHT = '400px'
