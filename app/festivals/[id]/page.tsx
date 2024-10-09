@@ -9,6 +9,8 @@ import Image from 'next/image'
 import getMMDD from '@/utils/getMMDD'
 import getYYMMDD from '@/utils/getYYMMDD'
 import getDayOfWeek from '@/utils/getDayOfWeek'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 // データの型定義
 interface FestivalData {
@@ -226,6 +228,10 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						</p>
 						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
 							<p className="p-2 text-md">{festivalData.overview}</p>
+							<ReactMarkdown remarkPlugins={[remarkGfm]}>
+								{festivalData.overview}
+								{/* <p className="p-2 text-md">{festivalData.overview}</p> */}
+							</ReactMarkdown>
 						</div>
 					</div>
 
@@ -242,7 +248,10 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							{festivalData.name}の歴史
 						</p>
 						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
-							<p className="p-3 text-md">{festivalData.history}</p>
+							<ReactMarkdown remarkPlugins={[remarkGfm]}>
+								{festivalData.history}
+								{/* <p className="p-3 text-md">{festivalData.history}</p> */}
+							</ReactMarkdown>
 						</div>
 					</div>
 				</div>
