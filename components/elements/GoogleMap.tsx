@@ -128,49 +128,49 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 	}, [])
 
 	// リアルタイムで現在地を表示する処理
-	useEffect(() => {
-		if (!map) return
+	// useEffect(() => {
+	// 	if (!map) return
 
-		const successCallback = (position: GeolocationPosition) => {
-			const { latitude, longitude } = position.coords
-			const userLocation = { lat: latitude, lng: longitude }
+	// 	const successCallback = (position: GeolocationPosition) => {
+	// 		const { latitude, longitude } = position.coords
+	// 		const userLocation = { lat: latitude, lng: longitude }
 
-			if (currentLocationMarker) {
-				currentLocationMarker.setPosition(userLocation)
-			} else {
-				const marker = new google.maps.Marker({
-					position: userLocation,
-					map,
-					title: '現在地',
-					icon: {
-						path: google.maps.SymbolPath.CIRCLE,
-						scale: 8,
-						fillColor: '#4285F4',
-						fillOpacity: 1,
-						strokeWeight: 2,
-						strokeColor: '#FFFFFF',
-					},
-				})
-				setCurrentLocationMarker(marker)
-			}
+	// 		if (currentLocationMarker) {
+	// 			currentLocationMarker.setPosition(userLocation)
+	// 		} else {
+	// 			const marker = new google.maps.Marker({
+	// 				position: userLocation,
+	// 				map,
+	// 				title: '現在地',
+	// 				icon: {
+	// 					path: google.maps.SymbolPath.CIRCLE,
+	// 					scale: 8,
+	// 					fillColor: '#4285F4',
+	// 					fillOpacity: 1,
+	// 					strokeWeight: 2,
+	// 					strokeColor: '#FFFFFF',
+	// 				},
+	// 			})
+	// 			setCurrentLocationMarker(marker)
+	// 		}
 
-			map.setCenter(userLocation)
-		}
+	// 		map.setCenter(userLocation)
+	// 	}
 
-		const errorCallback = (error: GeolocationPositionError) => {
-			console.error('Error getting location:', error)
-		}
+	// 	const errorCallback = (error: GeolocationPositionError) => {
+	// 		console.error('Error getting location:', error)
+	// 	}
 
-		const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, {
-			enableHighAccuracy: true,
-			maximumAge: 10000,
-			timeout: 5000,
-		})
+	// 	const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, {
+	// 		enableHighAccuracy: true,
+	// 		maximumAge: 10000,
+	// 		timeout: 5000,
+	// 	})
 
-		return () => {
-			navigator.geolocation.clearWatch(watchId)
-		}
-	}, [map, currentLocationMarker])
+	// 	return () => {
+	// 		navigator.geolocation.clearWatch(watchId)
+	// 	}
+	// }, [map, currentLocationMarker])
 
 	// ボタンのレンダリング
 	const hasLocationsOfType = (type: string) => locations.some((location) => location.type === type)
