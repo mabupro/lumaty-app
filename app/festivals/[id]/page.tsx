@@ -5,12 +5,11 @@ import FestivalPeriod from '@/components/elements/FestivalPeriod'
 import GoogleMap from '@/components/elements/GoogleMap'
 import NewsButton from '@/components/elements/NewsButton'
 import MainButton from '@/components/elements/MainButton'
+import MarkdownRenderer from '@/components/layouts/MarkdownRenderer'
 import Image from 'next/image'
 import getMMDD from '@/utils/getMMDD'
 import getYYMMDD from '@/utils/getYYMMDD'
 import getDayOfWeek from '@/utils/getDayOfWeek'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 
 // データの型定義
 interface FestivalData {
@@ -227,10 +226,8 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							{festivalData.name}の概要
 						</p>
 						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
-							<ReactMarkdown remarkPlugins={[remarkGfm]}>
-								{festivalData.overview}
-								{/* <p className="p-2 text-md">{festivalData.overview}</p> */}
-							</ReactMarkdown>
+							<MarkdownRenderer content={festivalData.overview} />
+							{/* <p className="p-2 text-md">{festivalData.overview}</p> */}
 						</div>
 					</div>
 
@@ -247,10 +244,8 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							{festivalData.name}の歴史
 						</p>
 						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
-							<ReactMarkdown remarkPlugins={[remarkGfm]}>
-								{festivalData.history}
-								{/* <p className="p-3 text-md">{festivalData.history}</p> */}
-							</ReactMarkdown>
+							<MarkdownRenderer content={festivalData.history} />
+							{/* <p className="p-3 text-md">{festivalData.history}</p> */}
 						</div>
 					</div>
 				</div>
