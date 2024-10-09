@@ -201,7 +201,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 				</div>
 
 				<div className="bg-white  py-12">
-					<Subtitle subtitle="アクセス" color="black" />
+					<Subtitle subtitle="会場マップ" color="black" />
 					<div className="mx-auto mt-8 w-90 h-auto justify-center rounded-md bg-slate-300">
 						<GoogleMap locations={locationData} />
 					</div>
