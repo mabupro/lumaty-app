@@ -243,7 +243,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						<p className="text-xl font-semibold text-center pr-36 mt-3 text-white">
 							{festivalData.name}の歴史
 						</p>
-						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md">
+						<div className="bg-slate-200 mx-auto my-8 w-4/5 rounded-md p-3">
 							<MarkdownRenderer content={festivalData.history} />
 							{/* <p className="p-3 text-md">{festivalData.history}</p> */}
 						</div>

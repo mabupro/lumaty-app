@@ -1,7 +1,5 @@
 import Link from 'next/link'
 import { Lalezar } from 'next/font/google'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 
 const LalezarFont = Lalezar({
 	weight: '400',
