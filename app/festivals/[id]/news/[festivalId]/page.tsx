@@ -74,7 +74,7 @@ export default async function Page({ params }: { params: { id: string; festivalI
 							{new Date(newsData.posted_date).toLocaleDateString()}
 						</p>
 						<div
-							className={`${newsData.importance === '高' ? 'bg-red-400' : 'bg-amber-300'} w-28 rounded-sm`}
+							className={`${newsData.importance === '高' ? 'bg-red-400' : 'bg-amber-400'} w-28 rounded-sm`}
 						>
 							<p className="text-white text-sm font-semibold text-center">
 								{newsData.importance === '高' ? '重要' : 'お知らせ'}
