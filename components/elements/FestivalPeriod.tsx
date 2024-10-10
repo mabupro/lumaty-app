@@ -37,8 +37,8 @@ export default function EventPeriod({
 	return (
 		<>
 			{/* <Link href={`/festival/${festivalId}/venue/${index}`}> */}
-				<div className="relative border-2 border-slate-200 mx-auto my-12 w-5/6 h-32 justify-center rounded-lg bg-teal-500">
-					<div className="w-60 h-10 mx-auto -my-5 bg-teal-500">
+				<div className="relative border-2 border-slate-200 mx-auto my-12 w-5/6 h-32 justify-center rounded-lg bg-emerald-500">
+					<div className="w-60 h-10 mx-auto -my-5 bg-emerald-500">
 						<p
 							className={`pt-1 text-center font-semibold text-white ${getFontSizeClass(program)}`}
 						>

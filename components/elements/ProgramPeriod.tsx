@@ -30,7 +30,7 @@ export default function ProgramPeriod({
 
 	return (
 		<div className="border-2 border-gray-200 mx-auto my-3 w-5/6 rounded-lg bg-white shadow-md  cursor-pointer transition hover:opacity-80">
-			<div className="px-4 py-3 bg-teal-400 rounded-t-lg">
+			<div className="px-4 py-3 bg-green-400 rounded-t-lg">
 				<p className=" text-slate-700 font-bold">{name}</p>
 			</div>
 			<div className="p-4">

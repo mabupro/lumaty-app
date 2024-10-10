@@ -14,7 +14,7 @@ export default function NewsButton({ festivalId, id, title, posted_date, importa
 		<Link href={`/festivals/${festivalId}/news/${id}`}>
 			<div className="cursor-pointer mx-10 mt-6 bg-slate-50 rounded-md">
 				<div className="flex gap-4">
-					<div className={`${importance === '高' ? 'bg-red-400' : 'bg-amber-300'} w-28 rounded-sm`}>
+					<div className={`${importance === '高' ? 'bg-red-400' : 'bg-amber-400'} w-28 rounded-sm`}>
 						<p className="text-white font-semibold text-center">
 							{importance === '高' ? '重要' : 'お知らせ'}
 						</p>

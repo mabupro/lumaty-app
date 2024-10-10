@@ -9,7 +9,7 @@ const LalezarFont = Lalezar({
 export default function Home() {
 	return (
 		<>
-			<div className="h-screen bg-teal-500">
+			<div className="h-screen bg-emerald-500">
 				<div className=" text-5xl text-center text-white pt-48">
 					<p className={LalezarFont.className}>Lumaty</p>
 				</div>

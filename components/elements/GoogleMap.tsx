@@ -184,7 +184,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 				{hasLocationsOfType('主要場所') && (
 					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
-						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === '主要場所' ? 'bg-blue-500 text-white' : 'bg-slate-200'}`}
+						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === '主要場所' ? 'bg-teal-700 text-white' : 'bg-slate-200'}`}
 						onClick={() => addMarkers('主要場所')}
 					>
 						会場
@@ -193,7 +193,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 				{hasLocationsOfType('駐車場') && (
 					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
-						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === '駐車場' ? 'bg-blue-400 text-white' : 'bg-slate-200'}`}
+						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === '駐車場' ? 'bg-teal-700 text-white' : 'bg-slate-200'}`}
 						onClick={() => addMarkers('駐車場')}
 					>
 						駐車場
@@ -202,7 +202,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 				{hasLocationsOfType('トイレ') && (
 					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
-						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === 'トイレ' ? 'bg-blue-400 text-white' : 'bg-slate-200'}`}
+						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === 'トイレ' ? 'bg-teal-700 text-white' : 'bg-slate-200'}`}
 						onClick={() => addMarkers('トイレ')}
 					>
 						トイレ
@@ -211,7 +211,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 				{hasLocationsOfType('ゴミ箱') && (
 					// biome-ignore lint/a11y/useButtonType: <explanation>
 					<button
-						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === 'ゴミ箱' ? 'bg-blue-400 text-white' : 'bg-slate-200'}`}
+						className={`mx-auto w-20 h-20 rounded-md shadow-md ${activeButton === 'ゴミ箱' ? 'bg-teal-700 text-white' : 'bg-slate-200'}`}
 						onClick={() => addMarkers('ゴミ箱')}
 					>
 						ゴミ箱
