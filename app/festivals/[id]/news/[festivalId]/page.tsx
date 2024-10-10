@@ -3,6 +3,29 @@ import { FiChevronLeft } from 'react-icons/fi'
 import Header from '@/components/layouts/Header'
 import Subtitle from '@/components/elements/Subtitle'
 
+// TODO:いずれはMarkDownに...
+// URLを検出してリンク化する関数
+function TextWithLink({ text }: { text: string }) {
+	const urlRegex = /(https?:\/\/[^\s]+)/g
+	const parts = text.split(urlRegex)
+
+	return (
+		<p>
+			{parts.map((part, index) =>
+				urlRegex.test(part) ? (
+					// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+					<Link key={index} href={part} target="_blank" rel="noopener noreferrer">
+						<span className="text-blue-500 underline">{part}</span>
+					</Link>
+				) : (
+					// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+					<span key={index}>{part}</span>
+				),
+			)}
+		</p>
+	)
+}
+
 interface NewsData {
 	id: number
 	title: string
@@ -18,7 +41,9 @@ export default async function Page({ params }: { params: { id: string; festivalI
 	let newsData: NewsData | null = null
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${festivalId}/${newsId}`)
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/news/${festivalId}/${newsId}`,
+		)
 		if (response.ok) {
 			const data = await response.json()
 			newsData = data.news
@@ -57,7 +82,8 @@ export default async function Page({ params }: { params: { id: string; festivalI
 						</div>
 					</div>
 					<hr className="my-4 h-1 bg-slate-300 mx-auto rounded" />
-					<p className="text-sm text-gray-700">{newsData.content}</p>
+					{/* newsData.contentをURLリンク化して表示 */}
+					<TextWithLink text={newsData.content} />
 				</div>
 			)}
 		</>
