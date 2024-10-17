@@ -66,6 +66,7 @@ model Image {
   festival_id   Int
   image_url     String // 画像のURL
   description   String? // 画像の説明（任意）
+  type          String   @default("") // ヘッダー画像・概要画像・歴史画像かなど
   uploaded_date DateTime // アップロード日
   festival      Festival @relation(fields: [festival_id], references: [id])
 }
