@@ -30,6 +30,11 @@ export default function Home() {
 						<span>準備中</span>
 					</div>
 
+					{/* 新規登録フォーム */}
+					<Link href="/forms/new" className="btn-border">
+						<span>新規登録フォーム</span>
+					</Link>
+
 					{/* 文化祭用フォーム */}
 					<Link href="/forms/2" className="btn-border">
 						<span>文化祭フォーム</span>
