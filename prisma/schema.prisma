@@ -24,40 +24,40 @@ model Festival {
   end_date       DateTime? // イベント終了日
   locations      Location[] // 1対多リレーション: 位置データ
   news           News[] // 1対多リレーション: ニュース
-  images         Image[] // 1対多リレーション: イメージ
-  programs       Program[] // 新たに追加されるプログラムとの1対多リレーション
+  images         Image[] // 1対多リレーション: 画像
+  programs       Program[] // 1対多リレーション: プログラム
 }
 
 model Program {
   id          Int       @id @default(autoincrement())
-  festival_id Int // どの祭りに属するか
-  festival    Festival  @relation(fields: [festival_id], references: [id]) // リレーション
-  name        String // プログラム名
-  location_id Int? // 場所が決まっている場合に対応
+  festival_id Int
+  festival    Festival  @relation(fields: [festival_id], references: [id])
+  name        String
+  location_id Int?
   location    Location? @relation(fields: [location_id], references: [id])
-  start_time  DateTime // プログラム開始時刻
-  end_time    DateTime? // プログラム終了時刻 (nullableにする)
-  description String? // プログラムの詳細説明
+  start_time  DateTime
+  end_time    DateTime?
+  description String?
 }
 
 model Location {
   id          Int       @id @default(autoincrement())
   festival_id Int
-  festival    Festival  @relation(fields: [festival_id], references: [id]) // リレーション
+  festival    Festival  @relation(fields: [festival_id], references: [id])
   type        String // 主要場所, ゴミ箱, 駐車場など
-  name        String? // 場所の名前がある時
-  latitude    Float // 緯度
-  longitude   Float // 経度
-  programs    Program[] // 1対多リレーション: この場所で行われるプログラム
+  name        String?
+  latitude    Float
+  longitude   Float
+  programs    Program[] // 1対多リレーション: プログラム
 }
 
 model News {
   id          Int      @id @default(autoincrement())
   festival_id Int
-  importance  String // 重要度
-  posted_date DateTime // 投稿日付
-  title       String // ニュースタイトル
-  content     String // ニュース内容
+  importance  String
+  posted_date DateTime
+  title       String
+  content     String
   festival    Festival @relation(fields: [festival_id], references: [id])
 }
 
@@ -67,5 +67,6 @@ model Image {
   image_url     String // 画像のURL
   description   String? // 画像の説明（任意）
   uploaded_date DateTime // アップロード日
+  type          String // 'thumbnail', 'overview', 'history' などの画像の種類
   festival      Festival @relation(fields: [festival_id], references: [id])
 }

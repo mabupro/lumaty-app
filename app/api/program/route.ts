@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/prisma/prismaClient'
+import { ZodError } from 'zod'
+import { programSchema } from '@/types/validate'
 
 // プログラムを全て取得
 export const GET = async () => {
@@ -11,35 +13,52 @@ export const GET = async () => {
 			},
 		})
 		return NextResponse.json({ message: 'Success', programs }, { status: 200 })
-	} catch (error) {
-		console.error('Error fetching programs:', error)
-		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	} catch (error: unknown) {
+		if (error instanceof Error) {
+			return NextResponse.json({ message: 'Error', error: error.message }, { status: 500 })
+		}
+		return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 })
 	} finally {
 		await prisma.$disconnect()
 	}
 }
 
 // 新しいプログラムを追加
-// export const POST = async (req: Request) => {
-// 	try {
-// 		const { festival_id, name, location_id, start_time, end_time, description } = await req.json()
+export const POST = async (req: Request) => {
+	try {
+		const body = await req.json()
 
-// 		const newProgram = await prisma.program.create({
-// 			data: {
-// 				festival_id,
-// 				name,
-// 				location_id, // nullでもOK
-// 				start_time,
-// 				end_time,
-// 				description,
-// 			},
-// 		})
+		// Zodでバリデーション
+		const validatedProgram = programSchema.parse(body)
 
-// 		return NextResponse.json({ message: 'Success', newProgram }, { status: 201 })
-// 	} catch (error) {
-// 		console.error('Error creating program:', error)
-// 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
-// 	} finally {
-// 		await prisma.$disconnect()
-// 	}
-// }
+		// 新しいプログラムを作成
+		const newProgram = await prisma.program.create({
+			data: {
+				festival_id: validatedProgram.festival_id,
+				name: validatedProgram.name,
+				location_id: validatedProgram.location_id, // nullでもOK
+				start_time: new Date(validatedProgram.start_time), // 日付をDate型に変換
+				end_time: validatedProgram.end_time ? new Date(validatedProgram.end_time) : null, // 終了時間があればDate型に変換
+				description: validatedProgram.description,
+			},
+		})
+
+		return NextResponse.json({ message: 'Success', newProgram }, { status: 201 })
+	} catch (error: unknown) {
+		if (error instanceof ZodError) {
+			return NextResponse.json(
+				{ message: 'Validation Error', error: error.errors },
+				{ status: 400 },
+			)
+		}
+		if (error instanceof Error) {
+			return NextResponse.json(
+				{ message: 'Error creating program', error: error.message },
+				{ status: 500 },
+			)
+		}
+		return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 })
+	} finally {
+		await prisma.$disconnect()
+	}
+}

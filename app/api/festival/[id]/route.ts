@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/prisma/prismaClient'
+// biome-ignore lint/correctness/noUndeclaredDependencies: <explanation>
+import { ZodError } from 'zod'
+import { festivalSchema, locationSchema, newsSchema, imageSchema } from '@/types/validate' // validate.tsからスキーマをインポート
 
 // 祭りごとに取得用
-export const GET = async (req: Request, res: NextResponse) => {
+export const GET = async (req: Request) => {
 	try {
 		const url = new URL(req.url)
 		const id = Number(url.pathname.split('/festival/')[1])
@@ -12,71 +15,83 @@ export const GET = async (req: Request, res: NextResponse) => {
 			return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 })
 		}
 
-		const festival = await prisma.festival.findFirst({ where: { id } })
+		const festival = await prisma.festival.findFirst({
+			where: { id },
+			include: {
+				locations: true,
+				news: true,
+				images: true,
+				programs: true,
+			},
+		})
 
 		if (!festival) {
-			return NextResponse.json({ message: 'festivals not found' }, { status: 404 })
+			return NextResponse.json({ message: 'Festival not found' }, { status: 404 })
 		}
 
 		return NextResponse.json({ message: 'Success', festival }, { status: 200 })
-	} catch (error) {
-		console.error('Error fetching festivals:', error)
-		return NextResponse.json({ message: 'Error', error }, { status: 500 })
+	} catch (error: unknown) {
+		return NextResponse.json(
+			{ message: 'Error fetching festival', error: (error as Error).message },
+			{ status: 500 },
+		)
 	} finally {
 		await prisma.$disconnect()
 	}
 }
 
-// 祭り、編集用
-// export const PUT = async (req: Request) => {
-// 	try {
-// 		const url = new URL(req.url)
-// 		const id = Number(url.pathname.split('/festival/')[1])
-// 		const {
-// 			name,
-// 			country,
-// 			prefecture,
-// 			city_town,
-// 			representative,
-// 			overview,
-// 			history,
-// 			start_date,
-// 			end_date,
-// 			locations,
-// 			news,
-// 			images,
-// 		} = await req.json()
+// 祭り編集用
+export const PUT = async (req: Request) => {
+	try {
+		const url = new URL(req.url)
+		const id = Number(url.pathname.split('/festival/')[1])
 
-// 		// Festival データを作成する
-// 		const festival = await prisma.festival.update({
-// 			data: {
-// 				name,
-// 				country,
-// 				prefecture,
-// 				city_town,
-// 				representative,
-// 				overview,
-// 				history,
-// 				start_date: start_date ? new Date(start_date) : null,
-// 				end_date: end_date ? new Date(end_date) : null,
-// 				// リレーションのデータはネストして作成
-// 				locations: {
-// 					create: locations, // 例: locationsが[{...}, {...}]の形式であること
-// 				},
-// 				news: {
-// 					create: news,
-// 				},
-// 				images: {
-// 					create: images,
-// 				},
-// 			},
-// 			where: { id },
-// 		})
-// 		return NextResponse.json({ message: 'Success', festival }, { status: 200 })
-// 	} catch (error) {
-// 		console.error('Error creating festival:', error)
-// 		return NextResponse.json({ message: 'Error', error }, { status: 500 })
-// 	} finally {
-// 		await prisma.$disconnect()
-// 	}
-// }
+		if (Number.isNaN(id)) {
+			return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 })
+		}
+
+		const body = await req.json()
+
+		// 各スキーマを使ってバリデーション
+		const validatedFestival = festivalSchema.parse(body)
+		const validatedLocations = body.locations
+			? locationSchema.array().parse(body.locations)
+			: undefined
+		const validatedNews = body.news ? newsSchema.array().parse(body.news) : undefined
+		const validatedImages = body.images ? imageSchema.array().parse(body.images) : undefined
+
+		// Festival データを更新する
+		const festival = await prisma.festival.update({
+			where: { id },
+			data: {
+				name: validatedFestival.name,
+				country: validatedFestival.country,
+				prefecture: validatedFestival.prefecture,
+				city_town: validatedFestival.city_town,
+				representative: validatedFestival.representative,
+				overview: validatedFestival.overview,
+				history: validatedFestival.history,
+				start_date: validatedFestival.start_date ? new Date(validatedFestival.start_date) : null,
+				end_date: validatedFestival.end_date ? new Date(validatedFestival.end_date) : null,
+				locations: validatedLocations ? { deleteMany: {}, create: validatedLocations } : undefined,
+				news: validatedNews ? { deleteMany: {}, create: validatedNews } : undefined,
+				images: validatedImages ? { deleteMany: {}, create: validatedImages } : undefined,
+			},
+		})
+
+		return NextResponse.json({ message: 'Success', festival }, { status: 200 })
+	} catch (error: unknown) {
+		if (error instanceof ZodError) {
+			return NextResponse.json(
+				{ message: 'Validation Error', error: error.errors },
+				{ status: 400 },
+			)
+		}
+		return NextResponse.json(
+			{ message: 'Error updating festival', error: (error as Error).message },
+			{ status: 500 },
+		)
+	} finally {
+		await prisma.$disconnect()
+	}
+}
