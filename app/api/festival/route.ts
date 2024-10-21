@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/prisma/prismaClient'
-// biome-ignore lint/correctness/noUndeclaredDependencies: <explanation>
 import { ZodError } from 'zod'
 import { festivalAllSchema } from '@/types/validate'
 

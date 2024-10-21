@@ -35,6 +35,7 @@ export const festivalAllSchema = z.object({
 		.array(
 			z.object({
 				image_url: z.string(),
+				type: z.string(),
 				description: z.string().optional(),
 				uploaded_date: z.string(),
 			}),
