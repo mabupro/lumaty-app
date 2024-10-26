@@ -110,7 +110,7 @@ export const POST = async (req: Request) => {
 	} catch (error) {
 		console.error('画像アップロードまたはデータベース登録中のエラー:', error)
 		return NextResponse.json(
-			{ message: '画像アップロードまたはデータベース登録中のエラー', error: error.message },
+			{ message: '画像アップロードまたはデータベース登録中のエラー', error: error },
 			{ status: 500 },
 		)
 	}
