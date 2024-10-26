@@ -146,31 +146,52 @@ export const POST = async (req: Request) => {
 export const DELETE = async (req: Request) => {
 	try {
 		const url = new URL(req.url)
-		const paths = url.pathname.split('/image/')[1]?.split('/')
-		const festival_id = Number(paths?.[0])
-		const id = paths?.[1] ? Number(paths[1]) : undefined
+		const id = Number(url.pathname.split('/').pop())
 
-		if (Number.isNaN(festival_id) || Number.isNaN(id)) {
-			return NextResponse.json({ message: 'Invalid festival or image ID' }, { status: 400 })
+		if (Number.isNaN(id)) {
+			return NextResponse.json({ message: 'Invalid image ID' }, { status: 400 })
 		}
 
-		// 画像データの削除
-		const deletedImage = await prisma.image.delete({
-			where: { id },
-		})
+		// Prismaから画像データを取得
+		const image = await prisma.image.findUnique({ where: { id } })
 
+		if (!image) {
+			return NextResponse.json({ message: 'Image not found' }, { status: 404 })
+		}
+
+		// Supabaseの削除用パスを抽出
+		const imagePath = image.image_url.split('/public/')[1]
+		if (!imagePath) {
+			return NextResponse.json({ message: 'Invalid image path' }, { status: 500 })
+		}
+
+		// Supabaseからの削除
+		const { error: storageError } = await supabase.storage
+			.from('festival-image-bucket')
+			.remove([`public/${imagePath}`])
+
+		if (storageError) {
+			console.error('Error deleting file from Supabase:', storageError)
+			return NextResponse.json(
+				{ message: 'Error deleting file from storage', error: storageError.message },
+				{ status: 500 },
+			)
+		}
+
+		// Prismaからの削除
+		const deletedImage = await prisma.image.delete({ where: { id } })
 		return NextResponse.json(
 			{ message: 'Image deleted successfully', deletedImage },
 			{ status: 200 },
 		)
-	} catch (error: unknown) {
+	} catch (error) {
 		if (error instanceof Error) {
 			return NextResponse.json(
 				{ message: 'Error deleting image', error: error.message },
 				{ status: 500 },
 			)
 		}
-		return NextResponse.json({ message: 'An unknown error occurred' }, { status: 500 })
+		return NextResponse.json({ message: 'Unknown error occurred' }, { status: 500 })
 	} finally {
 		await prisma.$disconnect()
 	}

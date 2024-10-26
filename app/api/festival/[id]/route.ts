@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/prisma/prismaClient'
-// biome-ignore lint/correctness/noUndeclaredDependencies: <explanation>
 import { ZodError } from 'zod'
 import { festivalSchema, locationSchema, newsSchema, imageSchema } from '@/types/validate' // validate.tsからスキーマをインポート
 
@@ -15,7 +14,7 @@ export const GET = async (req: Request) => {
 			return NextResponse.json({ message: 'Invalid festival ID' }, { status: 400 })
 		}
 
-		const festival = await prisma.festival.findFirst({
+		const festival = await prisma.festival.findUnique({
 			where: { id },
 			include: {
 				locations: true,
