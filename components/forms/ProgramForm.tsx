@@ -9,6 +9,7 @@ interface Program {
 	end_time: string
 	description: string
 	location_id: string
+	location?: { name: string }
 }
 
 interface Location {
@@ -83,7 +84,7 @@ const ProgramForm = ({ festivalId }: ProgramFormProps) => {
 			: null
 
 		// start_time, end_timeのバリデーション
-		if (isNaN(startDateTime.getTime()) || (formData.end_time && isNaN(endDateTime?.getTime()))) {
+		if (Number.isNaN(startDateTime.getTime()) || (formData.end_time && Number.isNaN(endDateTime?.getTime()))) {
 			setErrors({ time: { _errors: ['Invalid start or end time'] } })
 			return
 		}
