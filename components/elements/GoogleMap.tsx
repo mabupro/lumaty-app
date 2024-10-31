@@ -39,27 +39,27 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 	const [activeButton, setActiveButton] = useState<string>('')
 
 	const generateInfoWindowContent = (location: Location) => {
-		const programsList = location.programs
+		const programsList = (location.programs || [])
 			.map(
 				(program) => `
-			<li>
-				<strong>${program.name}</strong><br />
-				開始時間: ${program.start_time ? formatTime(program.start_time) : '未定'}<br />
-			</li>
-			<br/>
-    	`,
+				<li>
+					<strong>${program.name}</strong><br />
+					開始時間: ${program.start_time ? formatTime(program.start_time) : '未定'}<br />
+				</li>
+				<br/>
+			`,
 			)
 			.join('')
 
 		return `
-      	<div>
-			<h3>${location.name || ''}</h3>
-			<br/>
-			<ul>
-				${programsList || '<li>No Programs</li>'}
-			</ul>
-      </div>
-    `
+			<div>
+				<h3>${location.name || ''}</h3>
+				<br/>
+				<ul>
+					${programsList || '<li>No Programs</li>'}
+				</ul>
+			</div>
+		`
 	}
 
 	const clearMarkers = () => {
@@ -103,11 +103,17 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ locations }) => {
 
 	useEffect(() => {
 		const loadGoogleMapsScript = () => {
+			const existingScript = document.querySelector(
+				`script[src="https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}"]`,
+			)
+			if (existingScript) return initializeMap()
+
 			const script = document.createElement('script')
 			script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}`
 			script.async = true
 			script.defer = true
 			script.onload = initializeMap
+			script.onerror = () => console.error('Google Maps スクリプトの読み込みに失敗しました。')
 			document.head.appendChild(script)
 		}
 

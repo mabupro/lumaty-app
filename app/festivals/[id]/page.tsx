@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import Header from '@/components/layouts/Header'
 import Subtitle from '@/components/elements/Subtitle'
 import ProgramPeriod from '@/components/elements/ProgramPeriod'
@@ -10,8 +11,15 @@ import Image from 'next/image'
 import getMMDD from '@/utils/getMMDD'
 import getYYMMDD from '@/utils/getYYMMDD'
 import getDayOfWeek from '@/utils/getDayOfWeek'
+import {
+	festivalSchema,
+	newsSchema,
+	programSchema,
+	locationSchema,
+	imageSchema,
+} from '@/types/validate'
+import defaultImageUrl from '@/public/images/640x360.png'
 
-// データの型定義
 interface FestivalData {
 	id: number
 	name: string
@@ -49,6 +57,7 @@ interface LocationData {
 interface ImageData {
 	id: number
 	image_url: string
+	type: string
 }
 
 export default async function Festival({ params }: { params: { id: string } }) {
@@ -67,76 +76,42 @@ export default async function Festival({ params }: { params: { id: string } }) {
 	}
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/festival/${festivalId}`)
+		// Fetch and validate festival data
+		const festivalResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/festival/${festivalId}`,
+		)
+		const festivalJson = await festivalResponse.json()
+		festivalData = festivalSchema.parse(festivalJson.festival)
 
-		const data = await response.json()
+		// Fetch and validate news data
+		const newsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${festivalId}`)
+		const newsJson = await newsResponse.json()
+		newsData = newsSchema.array().parse(newsJson.news)
 
-		if (response.ok) {
-			festivalData = data.festival
+		// Fetch and validate program data
+		const programResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/program/${festivalId}`,
+		)
+		const programJson = await programResponse.json()
+		programData = programSchema.array().parse(programJson.programs)
 
-			// festivalDataがnullでないことを確認
-			if (!festivalData) {
-				console.error('Festival data is null')
-				return <div>Error: Festival data not found</div>
-			}
+		// Fetch and validate location data
+		const locationResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/location/${festivalId}`,
+		)
+		const locationJson = await locationResponse.json()
+		locationData = locationSchema.array().parse(locationJson.locations)
 
-			// ニュース
-			const newsResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/api/news?festivalId=${festivalData.id}`,
-			)
-			const newsDataResponse = await newsResponse.json()
-
-			// newsDataResponse.newsが配列かどうか確認
-			if (Array.isArray(newsDataResponse.news)) {
-				newsData = newsDataResponse.news
-			} else {
-				console.error('News data is not an array:', newsDataResponse.news)
-				newsData = [] // 配列でない場合は空の配列にする
-			}
-
-			// プログラム
-			const programResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/api/program?festivalId=${festivalData.id}`,
-			)
-			const programDataResponse = await programResponse.json()
-
-			if (Array.isArray(programDataResponse.programs)) {
-				programData = programDataResponse.programs
-			} else {
-				console.error('Program data is not an array:', programDataResponse.programs)
-				programData = []
-			}
-
-			// マップ
-			const locationResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/api/location?festivalId=${festivalData.id}`,
-			)
-			const locationDataResponse = await locationResponse.json()
-
-			if (Array.isArray(locationDataResponse.locations)) {
-				locationData = locationDataResponse.locations
-			} else {
-				console.error('Location data is not an array:', locationDataResponse.locations)
-				locationData = []
-			}
-
-			// 画像
-			const imageResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/api/image/${festivalData.id}`,
-			)
-			const imageDataResponse = await imageResponse.json()
-
-			if (Array.isArray(imageDataResponse.image)) {
-				imageData = imageDataResponse.image
-			} else {
-				console.error('Image data is not an array:', imageDataResponse.image)
-				imageData = []
-			}
-		} else {
-			console.error('Error fetching festival data:', data.message)
-		}
+		// Fetch and validate image data
+		const imageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/image/${festivalId}`)
+		const imageJson = await imageResponse.json()
+		imageData = imageSchema.array().parse(imageJson.images)
 	} catch (error) {
-		console.error('Failed to fetch data from API:', error)
+		if (error instanceof z.ZodError) {
+			console.error('Validation error:', error.errors)
+		} else {
+			console.error('Error fetching data:', error)
+		}
 		return <div>Error loading data. Please try again later.</div>
 	}
 
@@ -147,35 +122,42 @@ export default async function Festival({ params }: { params: { id: string } }) {
 		const endDayOfWeek = getDayOfWeek(festivalData.end_date)
 
 		const sortedProgramData = programData.sort((a, b) => {
-			// start_timeをDateオブジェクトに変換
 			const startA = new Date(a.start_time)
 			const startB = new Date(b.start_time)
-			return startA.getTime() - startB.getTime() // 昇順にソート
+			return startA.getTime() - startB.getTime()
 		})
+
+		// タイプ別の画像取得またはデフォルト画像に設定
+		const thumbnailImageUrl =
+			imageData.find((image) => image.type === 'thumbnail')?.image_url || defaultImageUrl
+		const overviewImageUrl =
+			imageData.find((image) => image.type === 'overview')?.image_url || defaultImageUrl
+		const historyImageUrl =
+			imageData.find((image) => image.type === 'history')?.image_url || defaultImageUrl
 
 		return (
 			<>
 				<Header />
-
 				<div className="bg-emerald-500 pt-20">
 					<Image
 						className="mx-auto mt-8 w-4/5 h-72 aspect-[1/1] justify-center rounded-2xl bg-gray-100"
-						src={imageData.length > 0 ? imageData[0].image_url : ''}
-						alt="Festival Image"
+						src={thumbnailImageUrl}
+						alt="Festival Thumbnail"
 						width={400}
 						height={400}
 						style={{ objectFit: 'cover' }}
 					/>
-
 					<div className="mt-8 pb-1">
-						<Subtitle subtitle="開催期間" color="white" />
+						<div className="mb-10">
+							<Subtitle subtitle="開催期間" color="white" />
+						</div>
 						<FestivalPeriod
 							festivalId={festivalId}
 							program={festivalData.name}
 							stDate={stDate}
 							stDayOfWeek={stDayOfWeek}
 							endDate={endDate}
-							endDayOfWeek={endDayOfWeek} 
+							endDayOfWeek={endDayOfWeek}
 							index={festivalData.id}
 						/>
 					</div>
@@ -198,25 +180,22 @@ export default async function Festival({ params }: { params: { id: string } }) {
 					</div>
 				</div>
 
-				<div className="bg-white  py-12">
-					<Subtitle subtitle="会場マップ" color="black" />
-					<div className="mx-auto mt-8 w-90 h-auto justify-center rounded-md bg-slate-300">
-						<GoogleMap locations={locationData} />
+				<div className="bg-white py-12">
+					<div className="mb-10">
+						<Subtitle subtitle="会場マップ" color="black" />
 					</div>
-					{/* <div className="mt-12"> */}
-					{/* TODO: urlを動的にしたい */}
-					{/* <MainButton title="アクセスの詳細はコチラ" url="Suito/access" /> */}
-					{/* </div> */}
+					<GoogleMap locations={locationData} />
 				</div>
 
 				<div className="bg-emerald-500 py-12">
-					<Subtitle subtitle="まつりについて" color="white" />
-					{/* TODO: 必要かどうかや、名前も動的にしたい */}
+					<div className="mb-10">
+						<Subtitle subtitle="まつりについて" color="white" />
+					</div>
 					<div className="cursor-pointer">
 						<Image
 							className="mx-auto mt-8 w-4/5 h-48 aspect-[16/9] justify-center rounded-md bg-gray-100"
+							src={overviewImageUrl}
 							alt="祭りの概要"
-							src={imageData.length > 0 ? imageData[1].image_url : ''}
 							width={640}
 							height={360}
 							style={{ objectFit: 'cover' }}
@@ -229,12 +208,11 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						</div>
 					</div>
 
-					{/* TODO: 必要かどうかや、名前も動的にしたい */}
 					<div className="cursor-pointer">
 						<Image
 							className="mx-auto mt-8 w-4/5 h-48 aspect-[16/9] justify-center rounded-md bg-gray-100"
+							src={historyImageUrl}
 							alt="祭りの歴史"
-							src={imageData.length > 0 ? imageData[2].image_url : ''}
 							width={640}
 							height={360}
 							style={{ objectFit: 'cover' }}
@@ -249,19 +227,19 @@ export default async function Festival({ params }: { params: { id: string } }) {
 				</div>
 
 				<div className="bg-white py-12">
-					<Subtitle subtitle="NEWS" color="black" />
-					<div className="mt-12">
-						{newsData.slice(0, 3).map((news) => (
-							<NewsButton
-								key={news.id}
-								id={news.id}
-								festivalId={festivalId}
-								importance={news.importance}
-								posted_date={getYYMMDD(news.posted_date)}
-								title={news.title}
-							/>
-						))}
+					<div className="mb-10">
+						<Subtitle subtitle="NEWS" color="black" />
 					</div>
+					{newsData.slice(0, 3).map((news) => (
+						<NewsButton
+							key={news.id}
+							id={news.id}
+							festivalId={festivalId}
+							importance={news.importance}
+							posted_date={getYYMMDD(news.posted_date)}
+							title={news.title}
+						/>
+					))}
 					<div className="my-12">
 						<MainButton title="News一覧はコチラ" url={`${params.id}/news`} />
 					</div>
@@ -269,5 +247,5 @@ export default async function Festival({ params }: { params: { id: string } }) {
 			</>
 		)
 	}
-	return null // イベントデータがない場合はnullを返す
+	return null
 }

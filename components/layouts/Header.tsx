@@ -36,13 +36,13 @@ export default function Header() {
 			</div>
 
 			{/* アンケートリンクを中央に配置 */}
-			<div className="flex justify-center">
+			{/* <div className="flex justify-center">
 				<Link href={`/festivals/${festivalId}/news/${newsId}`}>
 					<div className="text-blue-700  underline cursor-pointer">
 						<p>アンケートの回答はコチラ</p>
 					</div>
 				</Link>
-			</div>
+			</div> */}
 		</div>
 	)
 }
