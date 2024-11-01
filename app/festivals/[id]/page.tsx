@@ -21,41 +21,41 @@ import {
 import defaultImageUrl from '@/public/images/640x360.png'
 
 interface FestivalData {
-	id: number
+	id?: number
 	name: string
-	start_date: string
-	end_date: string
-	overview: string
-	history: string
+	start_date?: string | Date
+	end_date?: string | Date
+	overview?: string
+	history?: string
 }
 
 interface NewsData {
-	id: number
+	id?: number
 	title: string
 	posted_date: string
-	importance: '高' | '中' | '低'
+	importance: string
 }
 
 interface ProgramData {
-	id: number
+	id?: number
 	name: string
 	start_time: string
-	end_time: string | null
-	description: string | null
-	location: { name: string } | null
+	end_time?: string | null
+	description?: string | null
+	location?: { name: string } | null
 }
 
 interface LocationData {
-	id: number
+	id?: number
 	type: string
 	latitude: number
 	longitude: number
-	name: string | null
-	programs: ProgramData[]
+	name?: string | null
+	programs?: ProgramData[]
 }
 
 interface ImageData {
-	id: number
+	id?: number
 	image_url: string
 	type: string
 }
@@ -81,31 +81,62 @@ export default async function Festival({ params }: { params: { id: string } }) {
 			`${process.env.NEXT_PUBLIC_API_URL}/api/festival/${festivalId}`,
 		)
 		const festivalJson = await festivalResponse.json()
-		festivalData = festivalSchema.parse(festivalJson.festival)
+		const validatedFestivalData = festivalSchema.parse(festivalJson.festival)
+		festivalData = {
+			...validatedFestivalData,
+			start_date: validatedFestivalData.start_date
+				? validatedFestivalData.start_date.toISOString()
+				: '',
+			end_date: validatedFestivalData.end_date ? validatedFestivalData.end_date.toISOString() : '',
+		}
 
 		// Fetch and validate news data
 		const newsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${festivalId}`)
 		const newsJson = await newsResponse.json()
-		newsData = newsSchema.array().parse(newsJson.news)
+		newsData = newsSchema
+			.array()
+			.parse(newsJson.news)
+			.map((newsItem) => ({
+				...newsItem,
+				posted_date: newsItem.posted_date.toISOString(),
+			}))
 
 		// Fetch and validate program data
 		const programResponse = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/program/${festivalId}`,
 		)
 		const programJson = await programResponse.json()
-		programData = programSchema.array().parse(programJson.programs)
+		programData = programSchema
+			.array()
+			.parse(programJson.programs)
+			.map((program) => ({
+				...program,
+				description: program.description ?? null,
+			}))
 
 		// Fetch and validate location data
 		const locationResponse = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/location/${festivalId}`,
 		)
 		const locationJson = await locationResponse.json()
-		locationData = locationSchema.array().parse(locationJson.locations)
+		locationData = locationSchema
+			.array()
+			.parse(locationJson.locations)
+			.map((location) => ({
+				...location,
+				programs: programData ?? [],
+			}))
 
 		// Fetch and validate image data
 		const imageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/image/${festivalId}`)
 		const imageJson = await imageResponse.json()
-		imageData = imageSchema.array().parse(imageJson.images)
+		imageData = imageSchema
+			.array()
+			.parse(imageJson.images)
+			.map((image) => ({
+				id: image.festival_id ?? 0,
+				...image,
+			}))
 	} catch (error) {
 		if (error instanceof z.ZodError) {
 			console.error('Validation error:', error.errors)
@@ -116,10 +147,12 @@ export default async function Festival({ params }: { params: { id: string } }) {
 	}
 
 	if (festivalData) {
-		const stDate = getMMDD(festivalData.start_date)
-		const endDate = getMMDD(festivalData.end_date)
-		const stDayOfWeek = getDayOfWeek(festivalData.start_date)
-		const endDayOfWeek = getDayOfWeek(festivalData.end_date)
+		const stDate = getMMDD(festivalData.start_date ? festivalData.start_date.toString() : '')
+		const endDate = getMMDD(festivalData.end_date ? festivalData.end_date.toString() : '')
+		const stDayOfWeek = getDayOfWeek(
+			festivalData.start_date ? festivalData.start_date.toString() : '',
+		)
+		const endDayOfWeek = getDayOfWeek(festivalData.end_date ? festivalData.end_date.toString() : '')
 
 		const sortedProgramData = programData.sort((a, b) => {
 			const startA = new Date(a.start_time)
@@ -158,7 +191,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							stDayOfWeek={stDayOfWeek}
 							endDate={endDate}
 							endDayOfWeek={endDayOfWeek}
-							index={festivalData.id}
+							index={festivalData.id ?? 0}
 						/>
 					</div>
 
@@ -169,12 +202,12 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						{sortedProgramData.map((program) => (
 							<ProgramPeriod
 								key={program.id}
-								programId={program.id}
+								programId={program.id ?? 0}
 								name={program.name}
 								startTime={program.start_time}
-								endTime={program.end_time}
+								endTime={program.end_time ?? null}
 								locationName={program.location?.name || '場所未定'}
-								description={program.description}
+								description={program.description ?? null}
 							/>
 						))}
 					</div>
@@ -184,7 +217,18 @@ export default async function Festival({ params }: { params: { id: string } }) {
 					<div className="mb-10">
 						<Subtitle subtitle="会場マップ" color="black" />
 					</div>
-					<GoogleMap locations={locationData} />
+					{/* <GoogleMap locations={locationData} /> */}
+					<GoogleMap
+						locations={locationData.map((location) => ({
+							...location,
+							id: location.id ?? 0,
+							name: location.name ?? null,
+							programs: (location.programs ?? []).map((program) => ({
+								...program,
+								id: program.id ?? 0, // idがundefinedの場合は0を設定
+							})),
+						}))}
+					/>
 				</div>
 
 				<div className="bg-emerald-500 py-12">
@@ -204,7 +248,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							{festivalData.name}の概要
 						</p>
 						<div className="bg-slate-50 mx-auto my-8 w-4/5 rounded-md p-3">
-							<MarkdownRenderer content={festivalData.overview} />
+							<MarkdownRenderer content={festivalData.overview || ''} />
 						</div>
 					</div>
 
@@ -221,7 +265,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							{festivalData.name}の歴史
 						</p>
 						<div className="bg-slate-50 mx-auto my-8 w-4/5 rounded-md p-3">
-							<MarkdownRenderer content={festivalData.history} />
+							<MarkdownRenderer content={festivalData.history || ''} />
 						</div>
 					</div>
 				</div>
@@ -233,9 +277,9 @@ export default async function Festival({ params }: { params: { id: string } }) {
 					{newsData.slice(0, 3).map((news) => (
 						<NewsButton
 							key={news.id}
-							id={news.id}
+							id={news.id || 0}
 							festivalId={festivalId}
-							importance={news.importance}
+							importance={news.importance as '高' | '中' | '低'}
 							posted_date={getYYMMDD(news.posted_date)}
 							title={news.title}
 						/>
