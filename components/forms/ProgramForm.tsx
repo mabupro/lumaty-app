@@ -68,7 +68,6 @@ const ProgramForm = ({ festivalId }: ProgramFormProps) => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 
-		// 選択された場所名に対応するlocation_idを検索
 		const selectedLocation = locations.find((location) => location.name === formData.location_name)
 
 		if (!selectedLocation) {
@@ -76,15 +75,15 @@ const ProgramForm = ({ festivalId }: ProgramFormProps) => {
 			return
 		}
 
-		// バリデーションの前に、start_time と end_time に任意の日付を追加
-		const defaultDate = '2023-01-01' // 任意の日付
-		const startDateTime = new Date(`${defaultDate}T${formData.start_time}:00`)
-		const endDateTime = formData.end_time
-			? new Date(`${defaultDate}T${formData.end_time}:00`)
-			: null
+		// `start_time` と `end_time`に日付を設定
+		const defaultDate = '2023-01-01'
+		const startDateTime = new Date(`${defaultDate}T${formData.start_time}`)
+		const endDateTime = formData.end_time ? new Date(`${defaultDate}T${formData.end_time}`) : null
 
-		// start_time, end_timeのバリデーション
-		if (Number.isNaN(startDateTime.getTime()) || (formData.end_time && Number.isNaN(endDateTime?.getTime()))) {
+		if (
+			Number.isNaN(startDateTime.getTime()) ||
+			(formData.end_time && Number.isNaN(endDateTime?.getTime()))
+		) {
 			setErrors({ time: { _errors: ['Invalid start or end time'] } })
 			return
 		}
@@ -93,14 +92,13 @@ const ProgramForm = ({ festivalId }: ProgramFormProps) => {
 		const result = programSchema.safeParse({
 			...formData,
 			festival_id: festivalId,
-			location_id: selectedLocation.id, // location_nameを元にidを設定
-			start_time: startDateTime.toISOString(), // ISO形式に変換
-			end_time: endDateTime ? endDateTime.toISOString() : null, // ISO形式に変換
+			location_id: selectedLocation.id,
+			start_time: startDateTime.toISOString(),
+			end_time: endDateTime ? endDateTime.toISOString() : null,
 		})
 
 		if (!result.success) {
-			const fieldErrors = result.error.format()
-			setErrors(fieldErrors)
+			setErrors(result.error.format())
 			return
 		}
 
@@ -112,10 +110,11 @@ const ProgramForm = ({ festivalId }: ProgramFormProps) => {
 					...formData,
 					festival_id: festivalId,
 					location_id: selectedLocation.id,
-					start_time: startDateTime.toISOString(), // ISO形式に変換
-					end_time: endDateTime ? endDateTime.toISOString() : null, // ISO形式に変換
+					start_time: startDateTime.toISOString(),
+					end_time: endDateTime ? endDateTime.toISOString() : null,
 				}),
 			})
+
 			if (!response.ok) {
 				const errorData = await response.json()
 				console.error('Error adding program:', errorData)
@@ -130,7 +129,7 @@ const ProgramForm = ({ festivalId }: ProgramFormProps) => {
 				start_time: '',
 				end_time: '',
 				description: '',
-				location_name: '', // フォームをリセット
+				location_name: '',
 			})
 			setErrors({})
 		} catch (error) {
