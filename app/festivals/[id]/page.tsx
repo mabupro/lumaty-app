@@ -244,7 +244,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							height={360}
 							style={{ objectFit: 'cover' }}
 						/>
-						<p className="text-xl font-semibold text-center pr-36 mt-3 text-white">
+						<p className="text-xl font-semibold text-center mt-3 text-white w-4/5">
 							{festivalData.name}の概要
 						</p>
 						<div className="bg-slate-50 mx-auto my-8 w-4/5 rounded-md p-3">
@@ -261,7 +261,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							height={360}
 							style={{ objectFit: 'cover' }}
 						/>
-						<p className="text-xl font-semibold text-center pr-36 mt-3 text-white">
+						<p className="text-xl font-semibold text-center w-4/5 mt-3 text-white">
 							{festivalData.name}の歴史
 						</p>
 						<div className="bg-slate-50 mx-auto my-8 w-4/5 rounded-md p-3">

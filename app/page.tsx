@@ -20,8 +20,8 @@ export default function Home() {
 					</Link> */}
 
 					{/* 文化祭リンク */}
-					<Link href="/festivals/2" className="btn-border">
-						<span>文化祭</span>
+					<Link href="/festivals/8" className="btn-border">
+						<span>学園祭</span>
 					</Link>
 
 
@@ -36,8 +36,8 @@ export default function Home() {
 					</Link>
 
 					{/* 文化祭用フォーム */}
-					<Link href="/forms/2" className="btn-border">
-						<span>文化祭フォーム</span>
+					<Link href="/forms/8" className="btn-border">
+						<span>学園祭フォーム</span>
 					</Link>
 
 				</div>

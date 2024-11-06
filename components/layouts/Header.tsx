@@ -9,9 +9,6 @@ const LalezarFont = Lalezar({
 })
 
 export default function Header() {
-	const festivalId = 1; // TODO:仮のfestivalId。実際には動的に取得する。
-	const newsId = 2; // TODO:仮のnewsId。実際には動的に取得する。
-
 	return (
 		<div className="fixed top-0 left-0 w-full shadow-md rounded-b-lg bg-white z-50">
 			<div className="flex justify-between">
