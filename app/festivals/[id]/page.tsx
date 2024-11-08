@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import Header from '@/components/layouts/Header'
 import Subtitle from '@/components/elements/Subtitle'
 import ProgramPeriod from '@/components/elements/ProgramPeriod'
@@ -11,42 +10,44 @@ import Image from 'next/image'
 import getMMDD from '@/utils/getMMDD'
 import getYYMMDD from '@/utils/getYYMMDD'
 import getDayOfWeek from '@/utils/getDayOfWeek'
-import {
-	festivalSchema,
-	newsSchema,
-	programSchema,
-	locationSchema,
-	imageSchema,
-} from '@/types/validate'
 import defaultImageUrl from '@/public/images/640x360.png'
 
 interface FestivalData {
-	id?: number
+	id: number
 	name: string
-	start_date?: string | Date
-	end_date?: string | Date
+	country: string
+	prefecture: string
+	city_town: string
+	representative?: string
 	overview?: string
 	history?: string
+	start_date: string
+	end_date: string
+	locations: LocationData[]
+	news: NewsData[]
+	images: ImageData[]
+	programs: ProgramData[]
 }
 
 interface NewsData {
-	id?: number
+	id: number
 	title: string
 	posted_date: string
 	importance: string
+	content: string
 }
 
 interface ProgramData {
-	id?: number
+	id: number
 	name: string
 	start_time: string
 	end_time?: string | null
 	description?: string | null
-	location?: { name: string } | null
+	location_id?: number
 }
 
 interface LocationData {
-	id?: number
+	id: number
 	type: string
 	latitude: number
 	longitude: number
@@ -55,9 +56,10 @@ interface LocationData {
 }
 
 interface ImageData {
-	id?: number
+	id: number
 	image_url: string
 	type: string
+	description?: string
 }
 
 export default async function Festival({ params }: { params: { id: string } }) {
@@ -65,108 +67,40 @@ export default async function Festival({ params }: { params: { id: string } }) {
 	const festivalId = Number(festivalIdString)
 
 	let festivalData: FestivalData | null = null
-	let newsData: NewsData[] = []
-	let programData: ProgramData[] = []
-	let locationData: LocationData[] = []
-	let imageData: ImageData[] = []
 
 	if (Number.isNaN(festivalId)) {
-		console.error('Invalid festival ID:', festivalIdString)
 		return <div>Error: Invalid festival ID</div>
 	}
 
 	try {
-		// Fetch and validate festival data
 		const festivalResponse = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/festival/${festivalId}`,
 		)
 		const festivalJson = await festivalResponse.json()
-		const validatedFestivalData = festivalSchema.parse(festivalJson.festival)
-		festivalData = {
-			...validatedFestivalData,
-			start_date: validatedFestivalData.start_date
-				? validatedFestivalData.start_date.toISOString()
-				: '',
-			end_date: validatedFestivalData.end_date ? validatedFestivalData.end_date.toISOString() : '',
-		}
-
-		// Fetch and validate news data
-		const newsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news/${festivalId}`)
-		const newsJson = await newsResponse.json()
-		newsData = newsSchema
-			.array()
-			.parse(newsJson.news)
-			.map((newsItem) => ({
-				...newsItem,
-				posted_date: newsItem.posted_date.toISOString(),
-			}))
-
-		// Fetch and validate program data
-		const programResponse = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/api/program/${festivalId}`,
-		)
-		const programJson = await programResponse.json()
-		programData = programSchema
-			.array()
-			.parse(programJson.programs)
-			.map((program) => ({
-				...program,
-				description: program.description ?? null,
-			}))
-
-		// Fetch and validate location data
-		const locationResponse = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/api/location/${festivalId}`,
-		)
-		const locationJson = await locationResponse.json()
-		locationData = locationSchema
-			.array()
-			.parse(locationJson.locations)
-			.map((location) => ({
-				...location,
-				programs: programData ?? [],
-			}))
-
-		// Fetch and validate image data
-		const imageResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/image/${festivalId}`)
-		const imageJson = await imageResponse.json()
-		imageData = imageSchema
-			.array()
-			.parse(imageJson.images)
-			.map((image) => ({
-				id: image.festival_id ?? 0,
-				...image,
-			}))
+		festivalData = festivalJson.festival
 	} catch (error) {
-		if (error instanceof z.ZodError) {
-			console.error('Validation error:', error.errors)
-		} else {
-			console.error('Error fetching data:', error)
-		}
+		console.error('Error fetching data:', error)
 		return <div>Error loading data. Please try again later.</div>
 	}
 
 	if (festivalData) {
-		const stDate = getMMDD(festivalData.start_date ? festivalData.start_date.toString() : '')
-		const endDate = getMMDD(festivalData.end_date ? festivalData.end_date.toString() : '')
-		const stDayOfWeek = getDayOfWeek(
-			festivalData.start_date ? festivalData.start_date.toString() : '',
-		)
-		const endDayOfWeek = getDayOfWeek(festivalData.end_date ? festivalData.end_date.toString() : '')
+		const stDate = getMMDD(festivalData.start_date)
+		const endDate = getMMDD(festivalData.end_date)
+		const stDayOfWeek = getDayOfWeek(festivalData.start_date)
+		const endDayOfWeek = getDayOfWeek(festivalData.end_date)
 
-		const sortedProgramData = programData.sort((a, b) => {
+		const sortedProgramData = festivalData.programs.sort((a, b) => {
 			const startA = new Date(a.start_time)
 			const startB = new Date(b.start_time)
 			return startA.getTime() - startB.getTime()
 		})
 
-		// タイプ別の画像取得またはデフォルト画像に設定
 		const thumbnailImageUrl =
-			imageData.find((image) => image.type === 'thumbnail')?.image_url || defaultImageUrl
+			festivalData.images.find((image) => image.type === 'thumbnail')?.image_url || defaultImageUrl
 		const overviewImageUrl =
-			imageData.find((image) => image.type === 'overview')?.image_url || defaultImageUrl
+			festivalData.images.find((image) => image.type === 'overview')?.image_url || defaultImageUrl
 		const historyImageUrl =
-			imageData.find((image) => image.type === 'history')?.image_url || defaultImageUrl
+			festivalData.images.find((image) => image.type === 'history')?.image_url || defaultImageUrl
 
 		return (
 			<>
@@ -178,7 +112,6 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						alt="Festival Thumbnail"
 						width={400}
 						height={400}
-						style={{ objectFit: 'cover' }}
 					/>
 					<div className="mt-8 pb-1">
 						<div className="mb-10">
@@ -191,7 +124,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 							stDayOfWeek={stDayOfWeek}
 							endDate={endDate}
 							endDayOfWeek={endDayOfWeek}
-							index={festivalData.id ?? 0}
+							index={festivalData.id}
 						/>
 					</div>
 
@@ -202,11 +135,14 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						{sortedProgramData.map((program) => (
 							<ProgramPeriod
 								key={program.id}
-								programId={program.id ?? 0}
+								programId={program.id}
 								name={program.name}
 								startTime={program.start_time}
 								endTime={program.end_time ?? null}
-								locationName={program.location?.name || '場所未定'}
+								locationName={
+									festivalData.locations.find((loc) => loc.id === program.location_id)?.name ||
+									'場所未定'
+								}
 								description={program.description ?? null}
 							/>
 						))}
@@ -217,16 +153,10 @@ export default async function Festival({ params }: { params: { id: string } }) {
 					<div className="mb-10">
 						<Subtitle subtitle="会場マップ" color="black" />
 					</div>
-					{/* <GoogleMap locations={locationData} /> */}
 					<GoogleMap
-						locations={locationData.map((location) => ({
+						locations={festivalData.locations.map((location) => ({
 							...location,
-							id: location.id ?? 0,
-							name: location.name ?? null,
-							programs: (location.programs ?? []).map((program) => ({
-								...program,
-								id: program.id ?? 0, // idがundefinedの場合は0を設定
-							})),
+							programs: sortedProgramData.filter((program) => program.location_id === location.id),
 						}))}
 					/>
 				</div>
@@ -235,14 +165,13 @@ export default async function Festival({ params }: { params: { id: string } }) {
 					<div className="mb-10">
 						<Subtitle subtitle="まつりについて" color="white" />
 					</div>
-					<div className="cursor-pointer">
+					<div>
 						<Image
 							className="mx-auto mt-8 w-4/5 h-48 aspect-[16/9] justify-center rounded-md bg-gray-100"
 							src={overviewImageUrl}
 							alt="祭りの概要"
 							width={640}
 							height={360}
-							style={{ objectFit: 'cover' }}
 						/>
 						<p className="text-xl font-semibold text-center mt-3 text-white w-4/5">
 							{festivalData.name}の概要
@@ -252,16 +181,15 @@ export default async function Festival({ params }: { params: { id: string } }) {
 						</div>
 					</div>
 
-					<div className="cursor-pointer">
+					<div>
 						<Image
 							className="mx-auto mt-8 w-4/5 h-48 aspect-[16/9] justify-center rounded-md bg-gray-100"
 							src={historyImageUrl}
 							alt="祭りの歴史"
 							width={640}
 							height={360}
-							style={{ objectFit: 'cover' }}
 						/>
-						<p className="text-xl font-semibold text-center w-4/5 mt-3 text-white">
+						<p className="text-xl font-semibold text-center mt-3 text-white w-4/5">
 							{festivalData.name}の歴史
 						</p>
 						<div className="bg-slate-50 mx-auto my-8 w-4/5 rounded-md p-3">
@@ -274,10 +202,10 @@ export default async function Festival({ params }: { params: { id: string } }) {
 					<div className="mb-10">
 						<Subtitle subtitle="NEWS" color="black" />
 					</div>
-					{newsData.slice(0, 3).map((news) => (
+					{festivalData.news.slice(0, 3).map((news) => (
 						<NewsButton
 							key={news.id}
-							id={news.id || 0}
+							id={news.id}
 							festivalId={festivalId}
 							importance={news.importance as '高' | '中' | '低'}
 							posted_date={getYYMMDD(news.posted_date)}
