@@ -10,7 +10,7 @@ import Image from 'next/image'
 import getMMDD from '@/utils/getMMDD'
 import getYYMMDD from '@/utils/getYYMMDD'
 import getDayOfWeek from '@/utils/getDayOfWeek'
-import defaultImageUrl from '@/public/images/640x360.png'
+import defaultImageUrl from '@/public/images/準備中2-1024x576.png'
 
 interface FestivalData {
 	id: number
