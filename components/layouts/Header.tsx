@@ -40,6 +40,14 @@ export default function Header() {
 					</div>
 				</Link>
 			</div> */}
+			{/* アンケートリンクを中央に配置 */}
+			<div className="flex justify-center">
+				<Link href={'https://forms.gle/3KoC3WGBjEhWPByb6'}>
+					<div className="text-blue-700  underline cursor-pointer">
+						<p>アンケートの回答はコチラ</p>
+					</div>
+				</Link>
+			</div>
 		</div>
 	)
 }
