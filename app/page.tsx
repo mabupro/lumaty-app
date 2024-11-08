@@ -20,25 +20,25 @@ export default function Home() {
 					</Link> */}
 
 					{/* 文化祭リンク */}
-					<Link href="/festivals/8" className="btn-border">
+					<Link href="/festivals/9" className="btn-border">
 						<span>学園祭</span>
 					</Link>
 
 
 					{/* 準備中ボタン */}
-					<div className="btn-border-disabled">
+					{/* <div className="btn-border-disabled">
 						<span>準備中</span>
-					</div>
+					</div> */}
 
 					{/* 新規登録フォーム */}
-					<Link href="/forms/new" className="btn-border">
+					{/* <Link href="/forms/new" className="btn-border">
 						<span>新規登録フォーム</span>
-					</Link>
+					</Link> */}
 
 					{/* 文化祭用フォーム */}
-					<Link href="/forms/8" className="btn-border">
+					{/* <Link href="/forms/9" className="btn-border">
 						<span>学園祭フォーム</span>
-					</Link>
+					</Link> */}
 
 				</div>
 			</div>
