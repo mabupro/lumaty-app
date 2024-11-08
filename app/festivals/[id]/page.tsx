@@ -51,7 +51,7 @@ interface LocationData {
 	type: string
 	latitude: number
 	longitude: number
-	name?: string | null
+	name: string | null
 	programs?: ProgramData[]
 }
 
