@@ -75,7 +75,7 @@ export default async function Festival({ params }: { params: { id: string } }) {
 	try {
 		const festivalResponse = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/festival/${festivalId}`,
-			{ next: { revalidate: 3600 } },
+			{ next: { revalidate: 360 } },
 		)
 		const festivalJson = await festivalResponse.json()
 		festivalData = festivalJson.festival
