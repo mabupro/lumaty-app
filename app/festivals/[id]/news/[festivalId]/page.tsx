@@ -21,6 +21,7 @@ export default async function Page({ params }: { params: { id: string; festivalI
 	try {
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/api/news/${festivalId}/${newsId}`,
+			{ next: { revalidate: 60 } },
 		)
 		if (response.ok) {
 			const data = await response.json()
